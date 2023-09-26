@@ -2,6 +2,7 @@ package com.example.s700pos
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Row
@@ -33,13 +34,20 @@ import com.example.s700pos.ui.screens.Settings
 import com.example.s700pos.ui.screens.Shop
 import com.example.s700pos.ui.theme.S700POSTheme
 
+@Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("BENJI", "STARTING THE ACTIVITY")
         setContent {
             mainContent()
         }
     }
+
+
+
+
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

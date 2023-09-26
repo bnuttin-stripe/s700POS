@@ -18,13 +18,19 @@ val okHttpClient = OkHttpClient.Builder()
     .connectTimeout(20, TimeUnit.SECONDS)
     .build()
 
+private var json = Json {
+    ignoreUnknownKeys = true
+}
+
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(
+        json.asConverterFactory("application/json".toMediaType())
+    )
     .baseUrl(BASE_URL)
     .client(okHttpClient)
     .build()
 
-interface ProductApi{
+interface ProductApi {
     @GET("products/usd")
     suspend fun getProducts(): List<Product>
 
@@ -33,7 +39,7 @@ interface ProductApi{
 }
 
 object POSApi {
-    val retrofitService : ProductApi by lazy {
+    val retrofitService: ProductApi by lazy {
         retrofit.create(ProductApi::class.java)
     }
 }

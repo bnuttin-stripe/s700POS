@@ -1,4 +1,4 @@
-package com.example.s700pos.ui.screens
+package com.example.s700pos.ui.models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +12,8 @@ import java.io.IOException
 
 data class ProductUiState(
     var status: String,
-    var products: List<Product>?
+    var products: List<Product>?,
+    //var productResponse: ProductResponse?
 )
 
 class ProductViewModel : ViewModel() {
@@ -27,8 +28,11 @@ class ProductViewModel : ViewModel() {
         getProducts()
     }
 
-    fun getProducts() {
+    fun setLoading() {
         productUiState.status = "loading"
+    }
+
+    fun getProducts() {
         viewModelScope.launch {
             productUiState = try {
                 val listResult = POSApi.retrofitService.getProducts()

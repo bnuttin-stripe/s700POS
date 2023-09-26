@@ -28,7 +28,7 @@ fun FormattedPriceLabel(amount: Int, modifier: Modifier = Modifier) {
 @Composable
 fun LoadingImage() {
     Column(
-        //modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
