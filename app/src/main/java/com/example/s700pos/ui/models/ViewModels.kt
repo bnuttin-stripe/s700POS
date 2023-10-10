@@ -10,36 +10,32 @@ import com.example.s700pos.network.POSApi
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-data class ProductUiState(
-    var status: String,
-    var products: List<Product>?,
-    //var productResponse: ProductResponse?
-)
-
 class ProductViewModel : ViewModel() {
-    var productUiState: ProductUiState by mutableStateOf(
-        ProductUiState(
-            status = "loading",
-            products = null
-        )
-    )
+    var status by mutableStateOf("loading")
+    var products: List<Product> by mutableStateOf(listOf())
 
     init {
         getProducts()
     }
 
-    fun setLoading() {
-        productUiState.status = "loading"
-    }
-
     fun getProducts() {
+        products = listOf()
+        status = "loading"
         viewModelScope.launch {
-            productUiState = try {
-                val listResult = POSApi.retrofitService.getProducts()
-                ProductUiState("done", listResult)
+            try {
+                products = POSApi.retrofitService.getProducts()
+                status = "done"
             } catch (e: IOException) {
-                ProductUiState("error", listOf())
+                status = "error"
             }
         }
+    }
+}
+
+class CartViewModel : ViewModel() {
+    var items: List<Product> by mutableStateOf(listOf())
+
+    fun addToCart(product: Product) {
+        items += product
     }
 }

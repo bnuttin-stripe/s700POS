@@ -2,7 +2,6 @@ package com.example.s700pos
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Row
@@ -26,9 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.s700pos.ui.models.CartViewModel
+import com.example.s700pos.ui.models.ProductViewModel
 import com.example.s700pos.ui.screens.Checkout
 import com.example.s700pos.ui.screens.Settings
 import com.example.s700pos.ui.screens.Shop
@@ -38,24 +40,20 @@ import com.example.s700pos.ui.theme.S700POSTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("BENJI", "STARTING THE ACTIVITY")
         setContent {
             mainContent()
         }
     }
-
-
-
-
-
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun mainContent() {
-    var mDisplayMenu by remember { mutableStateOf(false) }
+    var displayMenu by remember { mutableStateOf(false) }
     val navController = rememberNavController()
+    val cartViewModel: CartViewModel = viewModel()
+    val productViewModel: ProductViewModel = viewModel()
 
     S700POSTheme {
         Scaffold(
@@ -69,7 +67,7 @@ fun mainContent() {
                         )
                     },
                     actions = {
-                        IconButton(onClick = { mDisplayMenu = !mDisplayMenu }) {
+                        IconButton(onClick = { displayMenu = !displayMenu }) {
                             Icon(
                                 imageVector = Icons.Filled.Menu,
                                 contentDescription = "Localized description"
@@ -77,13 +75,13 @@ fun mainContent() {
                         }
 
                         DropdownMenu(
-                            expanded = mDisplayMenu,
-                            onDismissRequest = { mDisplayMenu = false }
+                            expanded = displayMenu,
+                            onDismissRequest = { displayMenu = false }
                         ) {
                             DropdownMenuItem(
                                 onClick = {
                                     navController.navigate("shop")
-                                    mDisplayMenu = false
+                                    displayMenu = false
                                 },
                                 text = {
                                     Row {
@@ -99,7 +97,7 @@ fun mainContent() {
                             DropdownMenuItem(
                                 onClick = {
                                     navController.navigate("checkout")
-                                    mDisplayMenu = false
+                                    displayMenu = false
                                 },
                                 text = {
                                     Row {
@@ -115,7 +113,7 @@ fun mainContent() {
                             DropdownMenuItem(
                                 onClick = {
                                     navController.navigate("settings")
-                                    mDisplayMenu = false
+                                    displayMenu = false
                                 },
                                 text = {
                                     Row {
@@ -135,10 +133,10 @@ fun mainContent() {
         ) {
             NavHost(navController = navController, startDestination = "shop") {
                 composable("shop") {
-                    Shop()
+                    Shop(productViewModel, cartViewModel)
                 }
                 composable("checkout") {
-                    Checkout()
+                    Checkout(cartViewModel)
                 }
                 composable("settings") {
                     Settings()

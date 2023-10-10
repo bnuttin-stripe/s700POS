@@ -1,6 +1,8 @@
 package com.example.s700pos.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,47 +16,63 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.s700pos.ui.components.ErrorImage
 import com.example.s700pos.ui.components.LoadingImage
 import com.example.s700pos.ui.components.ProductList
+import com.example.s700pos.ui.models.CartViewModel
 import com.example.s700pos.ui.models.ProductViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun Shop() {
-    val productViewModel: ProductViewModel = viewModel()
+fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
+    val status = productViewModel.status
+    val products = productViewModel.products
+//    val navController = rememberNavController()
 
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { /* fab click handler */ }
-            ) {
-                Text("Inc")
-            }
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .padding(top = 70.dp, start = 10.dp, end = 10.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                val productUiState = productViewModel.productUiState
-                when (productUiState.status) {
-                    "loading" -> LoadingImage()
-                    "done" -> ProductList(productUiState.products)
-                    "error" -> ErrorImage()
+                onClick = {
+                    //navController.navigate("checkout")
                 }
-                //(productUiStateNew.numProducts.toString())
-                Button(onClick = {
-                    productViewModel.setLoading()
-                    productViewModel.getProducts()
-                }) {
-                    Text(productUiState.status)
+            ) {
+                Box() {
+//                    Icon(
+//                        painterResource(R.drawable.shopping_cart),
+//                        contentDescription = "Shop",
+//                        modifier = Modifier.padding(end = 10.dp)
+//                    )
+                    Text(cartViewModel.items.size.toString())
                 }
             }
         }
-    )
+    ){
+        Column(
+            modifier = Modifier
+                .padding(top = 70.dp, start = 10.dp, end = 10.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            when (status) {
+                "loading" -> LoadingImage()
+                "done" -> ProductList(productViewModel, cartViewModel)
+                "error" -> ErrorImage()
+            }
+            Button(onClick = {
+                productViewModel.getProducts()
+            }) {
+                Text(productViewModel.status)
+
+            }
+        }
+//        NavHost(navController = navController, startDestination = "checkout") {
+//            composable("shop") {
+//                Shop()
+//            }
+//            composable("checkout") {
+//                Checkout()
+//            }
+//        }
+    }
 }
