@@ -1,7 +1,6 @@
 package com.example.s700pos.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -16,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.s700pos.ui.components.ErrorImage
 import com.example.s700pos.ui.components.LoadingImage
 import com.example.s700pos.ui.components.ProductList
@@ -23,19 +23,15 @@ import com.example.s700pos.ui.models.CartViewModel
 import com.example.s700pos.ui.models.ProductViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
-    val status = productViewModel.status
-    val products = productViewModel.products
-//    val navController = rememberNavController()
-
+fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navController: NavHostController) {
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    //navController.navigate("checkout")
+                    navController.navigate("checkout")
                 }
             ) {
                 Box() {
@@ -54,7 +50,7 @@ fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
                 .padding(top = 70.dp, start = 10.dp, end = 10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            when (status) {
+            when (productViewModel.status) {
                 "loading" -> LoadingImage()
                 "done" -> ProductList(productViewModel, cartViewModel)
                 "error" -> ErrorImage()
@@ -66,13 +62,5 @@ fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel) {
 
             }
         }
-//        NavHost(navController = navController, startDestination = "checkout") {
-//            composable("shop") {
-//                Shop()
-//            }
-//            composable("checkout") {
-//                Checkout()
-//            }
-//        }
     }
 }

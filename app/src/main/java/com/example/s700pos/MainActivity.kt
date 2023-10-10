@@ -133,7 +133,7 @@ fun mainContent() {
         ) {
             NavHost(navController = navController, startDestination = "shop") {
                 composable("shop") {
-                    Shop(productViewModel, cartViewModel)
+                    Shop(productViewModel, cartViewModel, navController)
                 }
                 composable("checkout") {
                     Checkout(cartViewModel)

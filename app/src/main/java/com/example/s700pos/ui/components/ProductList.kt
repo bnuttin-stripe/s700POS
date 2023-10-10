@@ -21,7 +21,7 @@ fun ProductList(productViewModel: ProductViewModel, cartViewModel: CartViewModel
             Text("No products found")
         } else {
             products.forEach() {
-                ProductCard(it, cartViewModel)
+                product -> ProductCard(product, cartViewModel)
             }
         }
     }
