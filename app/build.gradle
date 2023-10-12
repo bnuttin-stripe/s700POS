@@ -79,4 +79,5 @@ dependencies {
     //implementation 'com.github.leonard-palm:compose-state-events:2.0.3'
     implementation "com.stripe:stripeterminal-core:3.0.0"
     implementation "com.stripe:stripeterminal-handoffclient:3.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 }

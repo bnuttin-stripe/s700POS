@@ -7,20 +7,26 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.s700pos.ui.components.Cart
 import com.example.s700pos.ui.models.CartViewModel
 
 @Composable
-fun Checkout(cartViewModel: CartViewModel
-) {
-    //val cartViewModel: CartViewModel = viewModel()
-
+fun Checkout(cartViewModel: CartViewModel) {
     Column(
         modifier = Modifier
-            .padding(top = 60.dp, start = 10.dp, end = 10.dp)
+            .padding(top = 70.dp, start = 10.dp, end = 10.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text("Checkout")
-        Text(cartViewModel.items.size.toString() + " items in cart")
+        Text(
+            "Checkout",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+        )
+        Cart(cartViewModel)
+        //Text(cartViewModel.items.size.toString() + " items in cart")
     }
 }

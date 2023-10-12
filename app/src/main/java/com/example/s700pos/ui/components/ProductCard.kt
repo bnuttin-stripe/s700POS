@@ -18,13 +18,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.s700pos.model.Product
 import com.example.s700pos.ui.models.CartViewModel
+import com.example.s700pos.ui.models.Product
 
 @Composable
 fun ProductCard(product: Product, cartViewModel: CartViewModel) {
-    //val cartViewModel: CartViewModel = viewModel()
-
     Card(
         shape = RectangleShape,
         elevation = CardDefaults.cardElevation(
@@ -61,7 +59,7 @@ fun ProductCard(product: Product, cartViewModel: CartViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    FormattedPriceLabel(product.price)
+                    Text("Price: " + FormattedPriceLabel(product.price))
                 }
             }
         }

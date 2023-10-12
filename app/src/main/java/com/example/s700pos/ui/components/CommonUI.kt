@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,13 +14,9 @@ import androidx.compose.ui.unit.dp
 import com.example.s700pos.R
 
 @Composable
-fun FormattedPriceLabel(amount: Int, modifier: Modifier = Modifier) {
+fun FormattedPriceLabel(amount: Double, modifier: Modifier = Modifier): String {
     val price = amount / 100
-    Text(
-        text = "$$price",
-        modifier = modifier,
-        style = MaterialTheme.typography.headlineSmall
-    )
+    return "$%.2f".format(price)
 }
 
 @Composable

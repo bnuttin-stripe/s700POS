@@ -14,7 +14,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.s700pos.ui.components.ErrorImage
 import com.example.s700pos.ui.components.LoadingImage
@@ -50,6 +52,12 @@ fun Shop(productViewModel: ProductViewModel, cartViewModel: CartViewModel, navCo
                 .padding(top = 70.dp, start = 10.dp, end = 10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            Text(
+                "Shop",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+            )
             when (productViewModel.status) {
                 "loading" -> LoadingImage()
                 "done" -> ProductList(productViewModel, cartViewModel)
