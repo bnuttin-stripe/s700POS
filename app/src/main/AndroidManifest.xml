@@ -20,7 +20,7 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
-        android:name=".MainApplication"
+        android:name="com.bnuttin.s700pos.MainApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -30,9 +30,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.S700POS"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="29">
         <activity
-            android:name=".MainActivity"
+            android:name="com.bnuttin.s700pos.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.S700POS">
             <intent-filter>
