@@ -1,14 +1,17 @@
 package com.bnuttin.s700pos.models
 
-import android.content.Context
+import android.annotation.SuppressLint
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bnuttin.s700pos.api.POSApi
+import com.bnuttin.s700pos.datastore.PrefRepository
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import java.io.IOException
@@ -110,17 +113,21 @@ class CustomerViewModel : ViewModel() {
     }
 }
 
-class SettingsViewModel(context: Context): ViewModel() {
+class SettingsViewModel(application: Application): AndroidViewModel(application) {
     var sellerName: String by mutableStateOf("Nobody")
     var statusConnectionToken by mutableStateOf("")
     var connectionToken: ConnectionToken by mutableStateOf(ConnectionToken())
+
+    @SuppressLint("StaticFieldLeak")
+    var context = getApplication<Application>().applicationContext
+    val prefRepository = PrefRepository(context)
 
     fun getConnectionToken(){
         statusConnectionToken = "loading"
         viewModelScope.launch{
             try {
                 connectionToken = POSApi.terminal.getConnectionToken()
-                Log.d("BENJI", connectionToken.secret ?: "None")
+                Log.d("BENJI", prefRepository.getShareMsg())
                 statusConnectionToken = "done"
             } catch (e: IOException) {
                 statusConnectionToken = "error"
@@ -128,14 +135,26 @@ class SettingsViewModel(context: Context): ViewModel() {
         }
     }
 
+    fun getShareMsg(): String{
+        return prefRepository.getShareMsg()
+    }
+
+    fun updateShareMsg(msg: String){
+        prefRepository.setShareMsg(msg)
+    }
+
     fun updateSellerName(name: String) {
         sellerName = name
     }
 }
 
-class CheckoutViewModel: ViewModel() {
+class CheckoutViewModel(application: Application): AndroidViewModel(application) {
     var statusPaymentIntent by mutableStateOf("")
     var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent())
+
+    @SuppressLint("StaticFieldLeak")
+    var context = getApplication<Application>().applicationContext
+    val prefRepository = PrefRepository(context)
 
     fun createPaymentIntent(amount: Int){
         statusPaymentIntent = "loading"

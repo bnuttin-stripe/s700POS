@@ -147,7 +147,7 @@ fun mainContent() {
                     Shop(productViewModel, cartViewModel)
                 }
                 composable("checkout") {
-                    Checkout(cartViewModel, checkoutViewModel)
+                    Checkout(cartViewModel, checkoutViewModel, settingsViewModel)
                 }
                 composable("customer") {
                     Customer(customerViewModel)

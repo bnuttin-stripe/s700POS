@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.sp
 import com.bnuttin.s700pos.components.Cart
 import com.bnuttin.s700pos.models.CartViewModel
 import com.bnuttin.s700pos.models.CheckoutViewModel
+import com.bnuttin.s700pos.models.SettingsViewModel
 
 @Composable
-fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel) {
+fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel, settingsViewModel: SettingsViewModel) {
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
@@ -33,6 +34,7 @@ fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel)
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
         )
+        Text(settingsViewModel.sellerName)
         Cart(cartViewModel)
         Button(
             onClick = {
