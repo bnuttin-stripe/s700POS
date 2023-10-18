@@ -4,13 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
-const val PREFERENCE_NAME = "MY_APP_PREF"
-const val PREF_LOGGED_IN = "PREF_LOGGED_IN"
-const val PREF_IS_LANGUAGE_SELECTED = "PREF_IS_LANGUAGE_SELECTED"
-const val PREF_CURRENT_SELECTED_LANGUAGE = "PREF_CURRENT_SELECTED_LANGUAGE"
-const val PREF_CONTACT_EMAIL = "PREF_CONTACT_EMAIL"
-const val PREF_SHARE_MESSAGE = "PREF_SHARE_MESSAGE"
-const val PREF_MINIMUM_APP_VERSION = "PREF_MINIMUM_APP_VERSION"
+const val PREFERENCE_NAME = "S700POSPreferences"
+const val PREF_CURRENCY = "PREF_CURRENCY"
+const val PREF_SELLER_NAME = "PREF_SELLER_NAME"
+const val PREF_BACKEND_URL = "PREF_BACKEND_URL"
 
 class PrefRepository(private val context: Context) {
     private val pref: SharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
@@ -45,11 +42,23 @@ class PrefRepository(private val context: Context) {
 
     private fun String.getBoolean() = pref.getBoolean(this, false)
 
-    fun setShareMsg(msg: String) {
-        PREF_SHARE_MESSAGE.put(msg)
+    fun setSellerName(name: String) {
+        PREF_SELLER_NAME.put(name)
     }
 
-    fun getShareMsg() = PREF_SHARE_MESSAGE.getString()
+    fun getSellerName() = PREF_SELLER_NAME.getString()
+
+    fun setCurrency(currency: String) {
+        PREF_CURRENCY.put(currency)
+    }
+
+    fun getCurrency() = PREF_CURRENCY.getString()
+
+    fun setBackendUrl(url: String) {
+        PREF_BACKEND_URL.put(url)
+    }
+
+    fun getBackendUrl() = PREF_BACKEND_URL.getString()
 
     fun clearData() {
         editor.clear()

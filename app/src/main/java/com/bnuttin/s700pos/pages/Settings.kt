@@ -23,16 +23,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bnuttin.s700pos.datastore.PrefRepository
 import com.bnuttin.s700pos.models.SettingsViewModel
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(settingsViewModel: SettingsViewModel) {
-    var shareMsg by remember { mutableStateOf("") }
+    var context = LocalContext.current
+    val prefRepository = PrefRepository(context)
+    var sellerName by remember { mutableStateOf(prefRepository.getSellerName()) }
+    var currency by remember { mutableStateOf(prefRepository.getCurrency()) }
+    var backendUrl by remember { mutableStateOf(prefRepository.getBackendUrl()) }
 
     Column(
         modifier = Modifier
@@ -41,22 +47,34 @@ fun Settings(settingsViewModel: SettingsViewModel) {
             .fillMaxWidth()
     ) {
         Text(
-            "Settings",
+            "Settings" + sellerName,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
         )
-        Divider()
-        Text("From storage: " + settingsViewModel.getShareMsg())
         OutlinedTextField(
-            value = shareMsg,
-            onValueChange = { shareMsg = it },
-            label = { Text("Share Msg") },
+            value = sellerName,
+            onValueChange = { sellerName = it },
+            label = { Text("Seller Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = currency,
+            onValueChange = { currency = it },
+            label = { Text("Currency") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = backendUrl,
+            onValueChange = { backendUrl = it },
+            label = { Text("Backend URL") },
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = {
-                settingsViewModel.updateShareMsg(shareMsg)
+                prefRepository.setSellerName(sellerName)
+                settingsViewModel.updateCurrency(currency)
+                settingsViewModel.updateBackendUrl(backendUrl)
             }
         ){
             Text("Update Share Msg")

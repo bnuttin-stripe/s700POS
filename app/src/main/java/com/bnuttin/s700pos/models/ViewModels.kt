@@ -2,7 +2,6 @@ package com.bnuttin.s700pos.models
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -114,7 +113,6 @@ class CustomerViewModel : ViewModel() {
 }
 
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
-    var sellerName: String by mutableStateOf("Nobody")
     var statusConnectionToken by mutableStateOf("")
     var connectionToken: ConnectionToken by mutableStateOf(ConnectionToken())
 
@@ -127,7 +125,6 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch{
             try {
                 connectionToken = POSApi.terminal.getConnectionToken()
-                Log.d("BENJI", prefRepository.getShareMsg())
                 statusConnectionToken = "done"
             } catch (e: IOException) {
                 statusConnectionToken = "error"
@@ -135,16 +132,28 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getShareMsg(): String{
-        return prefRepository.getShareMsg()
+    fun getSellerName(): String{
+        return prefRepository.getSellerName()
     }
 
-    fun updateShareMsg(msg: String){
-        prefRepository.setShareMsg(msg)
+    fun updateSellerName(name: String){
+        prefRepository.setSellerName(name)
     }
 
-    fun updateSellerName(name: String) {
-        sellerName = name
+    fun getCurrency(): String{
+        return prefRepository.getCurrency()
+    }
+
+    fun updateCurrency(currency: String){
+        prefRepository.setCurrency(currency)
+    }
+
+    fun getBackendUrl(): String{
+        return prefRepository.getBackendUrl()
+    }
+
+    fun updateBackendUrl(url: String){
+        prefRepository.setBackendUrl(url)
     }
 }
 

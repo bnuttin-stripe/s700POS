@@ -13,16 +13,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bnuttin.s700pos.components.Cart
+import com.bnuttin.s700pos.datastore.PrefRepository
 import com.bnuttin.s700pos.models.CartViewModel
 import com.bnuttin.s700pos.models.CheckoutViewModel
 import com.bnuttin.s700pos.models.SettingsViewModel
 
 @Composable
 fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel, settingsViewModel: SettingsViewModel) {
+    val prefRepository = PrefRepository(LocalContext.current)
+
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
@@ -34,7 +38,7 @@ fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
         )
-        Text(settingsViewModel.sellerName)
+        Text("Seller: " + prefRepository.getSellerName())
         Cart(cartViewModel)
         Button(
             onClick = {
