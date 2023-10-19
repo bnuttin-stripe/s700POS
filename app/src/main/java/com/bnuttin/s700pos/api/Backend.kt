@@ -1,5 +1,7 @@
 package com.bnuttin.s700pos.api
 
+import android.app.Application
+import android.content.Context
 import com.bnuttin.s700pos.models.ConnectionToken
 import com.bnuttin.s700pos.models.Customer
 import com.bnuttin.s700pos.models.PaymentIntent
@@ -30,6 +32,22 @@ private const val DIRECT_URL = "https://api.stripe.com/v1"
 //        return chain.proceed(request)
 //    }
 //}
+
+class MyApp : Application() {
+
+    override fun onCreate() {
+        instance = this
+        super.onCreate()
+    }
+
+    companion object {
+        var instance: MyApp? = null
+            private set
+
+        val context: Context?
+            get() = instance
+    }
+}
 
 val okHttpClient = OkHttpClient.Builder()
     .readTimeout(20, TimeUnit.SECONDS)

@@ -47,7 +47,7 @@ fun Settings(settingsViewModel: SettingsViewModel) {
             .fillMaxWidth()
     ) {
         Text(
-            "Settings" + sellerName,
+            "Settings",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
@@ -77,7 +77,7 @@ fun Settings(settingsViewModel: SettingsViewModel) {
                 settingsViewModel.updateBackendUrl(backendUrl)
             }
         ){
-            Text("Update Share Msg")
+            Text("Save")
         }
         Divider()
         Button(

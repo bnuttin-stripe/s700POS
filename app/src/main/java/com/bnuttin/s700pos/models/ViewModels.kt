@@ -157,13 +157,14 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
     }
 }
 
-class CheckoutViewModel(application: Application): AndroidViewModel(application) {
+//class CheckoutViewModel(application: Application): AndroidViewModel(application) {
+class CheckoutViewModel: ViewModel() {
     var statusPaymentIntent by mutableStateOf("")
     var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent())
 
-    @SuppressLint("StaticFieldLeak")
-    var context = getApplication<Application>().applicationContext
-    val prefRepository = PrefRepository(context)
+//    @SuppressLint("StaticFieldLeak")
+//    var context = getApplication<Application>().applicationContext
+//    val prefRepository = PrefRepository(context)
 
     fun createPaymentIntent(amount: Int){
         statusPaymentIntent = "loading"

@@ -38,7 +38,7 @@ class PrefRepository(private val context: Context) {
 
     private fun String.getInt() = pref.getInt(this, 0)
 
-    private fun String.getString() = pref.getString(this, "")!!
+    private fun String.getString(default: String) = pref.getString(this, default)!!
 
     private fun String.getBoolean() = pref.getBoolean(this, false)
 
@@ -46,19 +46,19 @@ class PrefRepository(private val context: Context) {
         PREF_SELLER_NAME.put(name)
     }
 
-    fun getSellerName() = PREF_SELLER_NAME.getString()
+    fun getSellerName() = PREF_SELLER_NAME.getString("")
 
     fun setCurrency(currency: String) {
         PREF_CURRENCY.put(currency)
     }
 
-    fun getCurrency() = PREF_CURRENCY.getString()
+    fun getCurrency() = PREF_CURRENCY.getString("usd")
 
     fun setBackendUrl(url: String) {
         PREF_BACKEND_URL.put(url)
     }
 
-    fun getBackendUrl() = PREF_BACKEND_URL.getString()
+    fun getBackendUrl() = PREF_BACKEND_URL.getString("blah blah")
 
     fun clearData() {
         editor.clear()
