@@ -32,11 +32,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.models.CustomerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun Customer(customerViewModel: CustomerViewModel) {
+fun Customer(customerViewModel: CustomerViewModel, navController: NavHostController) {
     var emailSearch by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
@@ -139,6 +140,26 @@ fun Customer(customerViewModel: CustomerViewModel) {
             }
         }
 
+        Button(
+            onClick = {
+                navController.navigate("payments")
+            },
+            shape = RoundedCornerShape(size = 6.dp),
+//            enabled = emailSearch.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(emailSearch)
+//                .matches(),
+            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+        ) {
+            Text("Payments")
+        }
+
+//        NavHost(navController = navController, startDestination = "customer") {
+//            composable("customer") {
+//                Customer(customerViewModel, navController)
+//            }
+//            composable("payments") {
+//                Payments(customerViewModel)
+//            }
+//        }
 
 //        Text(
 //            text = "ID: " + customerViewModel.customer.id

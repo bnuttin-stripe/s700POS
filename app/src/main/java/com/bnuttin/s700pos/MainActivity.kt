@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,6 +37,7 @@ import com.bnuttin.s700pos.models.ProductViewModel
 import com.bnuttin.s700pos.models.SettingsViewModel
 import com.bnuttin.s700pos.pages.Checkout
 import com.bnuttin.s700pos.pages.Customer
+import com.bnuttin.s700pos.pages.Payments
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
 import com.bnuttin.s700pos.theme.S700POSTheme
@@ -118,7 +120,7 @@ class MainActivity : ComponentActivity() {
         // Create your listener object. Override any methods that you want to be notified about
         val listener = object : TerminalListener {
             override fun onUnexpectedReaderDisconnect(reader: Reader) {
-                // Handle unexpected disconnects here
+                Log.d("BENJI", "Unexpected disconnect")
             }
         }
 
@@ -130,6 +132,7 @@ class MainActivity : ComponentActivity() {
 
         // Pass in the current application context, your desired logging level, your token provider, and the listener you created
         if (!Terminal.isInitialized()) {
+            Log.d("BENJI", "Initializing Terminal")
             Terminal.initTerminal(applicationContext, logLevel, tokenProvider, listener)
         }
 
@@ -271,11 +274,15 @@ fun mainContent() {
                     Checkout(cartViewModel, checkoutViewModel, settingsViewModel)
                 }
                 composable("customer") {
-                    Customer(customerViewModel)
+                    Customer(customerViewModel, navController)
                 }
                 composable("settings") {
                     Settings(settingsViewModel)
                 }
+                composable("payments") {
+                    Payments(customerViewModel)
+                }
+
             }
         }
     }
