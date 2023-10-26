@@ -5,6 +5,8 @@ package com.bnuttin.s700pos.pages
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +18,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,12 +30,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.datastore.PrefRepository
 import com.bnuttin.s700pos.models.SettingsViewModel
+import com.example.s700pos.R
 
 //@OptIn(ExperimentalMaterial3Api::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,16 +53,40 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
 
     Column(
         modifier = Modifier
-            .padding(top = 60.dp, start = 10.dp, end = 10.dp)
+            .padding(top = 70.dp, start = 10.dp, end = 10.dp)
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
     ) {
-        Text(
-            "Settings",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
-        )
+        Row() {
+            Text(
+                "Settings",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = {
+                navController.navigate("qrscanner")
+            }) {
+                Icon(
+                    painterResource(R.drawable.baseline_qr_code_scanner_24),
+                    contentDescription = "Scan",
+                    tint = Color.DarkGray
+                )
+            }
+            IconButton(onClick = {
+                context.startActivity(
+                    Intent(Intent.ACTION_VIEW)
+                        .setData(Uri.parse("stripe://settings/"))
+                )
+            }) {
+                Icon(
+                    painterResource(R.drawable.baseline_phone_android_24),
+                    contentDescription = "Phone",
+                    tint = Color.DarkGray
+                )
+            }
+
+        }
         OutlinedTextField(
             value = sellerName,
             onValueChange = { sellerName = it },
@@ -103,15 +133,6 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
             }
         }
         Text("Connection token: " + settingsViewModel.connectionToken.secret)
-        Button(
-            onClick = {
-                navController.navigate("qrscanner")
-            },
-            shape = RoundedCornerShape(size = 6.dp),
-            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
-        ) {
-            Text("Scan QR Code")
-        }
 
         Button(
             onClick = {

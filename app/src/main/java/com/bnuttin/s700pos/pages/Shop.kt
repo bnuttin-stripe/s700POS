@@ -37,7 +37,7 @@ fun Shop(
             "Shop",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            )
+        )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = { productViewModel.getProducts() }) {
             when (productViewModel.status) {
@@ -70,8 +70,10 @@ fun Shop(
             },
             modifier = Modifier.padding(top = 120.dp, start = 10.dp, end = 10.dp)
         )
+
         "error" -> Text(
             "Connection error",
-            modifier = Modifier.padding(top = 120.dp, start = 10.dp, end = 10.dp))
+            modifier = Modifier.padding(top = 120.dp, start = 10.dp, end = 10.dp)
+        )
     }
 }

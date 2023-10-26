@@ -35,8 +35,7 @@ fun Checkout(cartViewModel: CartViewModel, checkoutViewModel: CheckoutViewModel,
         Text(
             "Cart",
             fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+            fontWeight = FontWeight.Bold
         )
         Text("Seller: " + prefRepository.getSellerName())
         Cart(cartViewModel)

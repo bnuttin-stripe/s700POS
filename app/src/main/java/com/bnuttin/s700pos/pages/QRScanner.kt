@@ -10,7 +10,11 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,8 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,14 +35,13 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.api.QrCodeAnalyzer
 import com.bnuttin.s700pos.models.SettingsViewModel
+import com.example.s700pos.R
 import org.json.JSONObject
 
 @Composable
 fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostController) {
     var context = LocalContext.current
-    var code by remember {
-        mutableStateOf("")
-    }
+    var code by remember { mutableStateOf("") }
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }
@@ -60,19 +65,27 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
         launcher.launch(Manifest.permission.CAMERA)
     }
 
-
-
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
     ) {
-        Text(
-            text = "QR Scanner",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Row() {
+            Text(
+                "Settings QR Scanner",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = { navController.navigate("settings") }) {
+                Icon(
+                    painterResource(R.drawable.outline_arrow_back_24),
+                    contentDescription = "Back",
+                    tint = Color.DarkGray
+                )
+            }
+        }
 
-        if (hasCamPermission){
+        if (hasCamPermission) {
             AndroidView(
                 factory = { context ->
                     val previewView = PreviewView(context)
@@ -89,6 +102,7 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
                         ContextCompat.getMainExecutor(context),
                         QrCodeAnalyzer { result ->
                             code = result
+                            // TODO: Add error handling
                             val json = JSONObject(code)
                             settingsViewModel.updateSellerName(json.getString("seller"))
                             settingsViewModel.updateBackendUrl(json.getString("backend"))
@@ -102,15 +116,14 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
                             preview,
                             imageAnalysis
                         )
-                    } catch(e: Exception) {
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
                     previewView
                 },
                 modifier = Modifier.padding(start = 0.dp, top = 45.dp, end = 0.dp, bottom = 8.dp)
             )
-        }
-        else{
+        } else {
             Text("No Camera permissions")
         }
 

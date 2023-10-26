@@ -57,9 +57,7 @@ fun Customer(customerViewModel: CustomerViewModel, navController: NavHostControl
         Text(
             text = "Customer Lookup",
             fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
-        )
+            fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = emailSearch,
             onValueChange = { emailSearch = it },
