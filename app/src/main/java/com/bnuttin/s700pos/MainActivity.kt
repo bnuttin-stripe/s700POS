@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDeepLink
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -38,6 +37,7 @@ import com.bnuttin.s700pos.models.SettingsViewModel
 import com.bnuttin.s700pos.pages.Checkout
 import com.bnuttin.s700pos.pages.Customer
 import com.bnuttin.s700pos.pages.Payments
+import com.bnuttin.s700pos.pages.QRSCanner
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
 import com.bnuttin.s700pos.theme.S700POSTheme
@@ -277,12 +277,14 @@ fun mainContent() {
                     Customer(customerViewModel, navController)
                 }
                 composable("settings") {
-                    Settings(settingsViewModel)
+                    Settings(settingsViewModel, navController)
                 }
                 composable("payments") {
                     Payments(customerViewModel)
                 }
-
+                composable("qrscanner") {
+                    QRSCanner(settingsViewModel, navController)
+                }
             }
         }
     }

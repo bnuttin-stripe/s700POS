@@ -37,7 +37,6 @@ fun Shop(
             "Shop",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-
             )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = { productViewModel.getProducts() }) {
