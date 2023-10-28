@@ -2,10 +2,9 @@ package com.bnuttin.s700pos.api
 
 import android.app.Application
 import android.content.Context
-import com.bnuttin.s700pos.models.ConnectionToken
-import com.bnuttin.s700pos.models.Customer
-import com.bnuttin.s700pos.models.PaymentIntent
-import com.bnuttin.s700pos.models.Product
+import com.bnuttin.s700pos.viewmodels.Customer
+import com.bnuttin.s700pos.viewmodels.PaymentIntent
+import com.bnuttin.s700pos.viewmodels.Product
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -73,8 +72,11 @@ interface ProductApi {
 }
 
 interface CustomerApi {
-    @GET("customer/{email}")
-    suspend fun getCustomer(@Path("email") email: String): Customer
+    @GET("customers/{email}")
+    suspend fun getCustomers(@Path("email") email: String): List<Customer>
+
+    @GET("customer/{id}")
+    suspend fun getCustomer(@Path("id") id: String) : Customer
 
     @POST("customer")
     suspend fun updateCustomer(@Body customer: Customer) : Customer

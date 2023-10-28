@@ -1,4 +1,4 @@
-package com.bnuttin.s700pos.datastore
+package com.bnuttin.s700pos.api
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -58,7 +58,7 @@ class PrefRepository(private val context: Context) {
         PREF_BACKEND_URL.put(url)
     }
 
-    fun getBackendUrl() = PREF_BACKEND_URL.getString("blah blah")
+    fun getBackendUrl() = PREF_BACKEND_URL.getString("")
 
     fun clearData() {
         editor.clear()

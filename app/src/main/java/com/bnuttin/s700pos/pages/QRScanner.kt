@@ -33,14 +33,17 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.api.PrefRepository
 import com.bnuttin.s700pos.api.QrCodeAnalyzer
-import com.bnuttin.s700pos.models.SettingsViewModel
+import com.bnuttin.s700pos.api.SettingsViewModel
 import com.example.s700pos.R
 import org.json.JSONObject
 
 @Composable
 fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostController) {
     var context = LocalContext.current
+    val prefRepository = PrefRepository(context)
+
     var code by remember { mutableStateOf("") }
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
@@ -104,8 +107,8 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
                             code = result
                             // TODO: Add error handling
                             val json = JSONObject(code)
-                            settingsViewModel.updateSellerName(json.getString("seller"))
-                            settingsViewModel.updateBackendUrl(json.getString("backend"))
+                            prefRepository.setSellerName(json.getString("seller"))
+                            prefRepository.setBackendUrl(json.getString("backend"))
                             navController.navigate("settings")
                         }
                     )

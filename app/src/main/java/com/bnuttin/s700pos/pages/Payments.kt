@@ -2,7 +2,7 @@ package com.bnuttin.s700pos.pages
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.bnuttin.s700pos.models.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 
 @Composable
 fun Payments(customerViewModel: CustomerViewModel) {

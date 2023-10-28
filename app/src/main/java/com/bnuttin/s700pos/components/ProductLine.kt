@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.bnuttin.s700pos.models.Product
+import com.bnuttin.s700pos.viewmodels.Product
 
 @Composable
 fun ProductLine(product: Product, modifier: Modifier) {
