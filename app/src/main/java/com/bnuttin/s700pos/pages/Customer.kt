@@ -7,16 +7,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -32,20 +28,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.components.FormattedPriceLabel
+import com.bnuttin.s700pos.components.PaymentCard
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.example.s700pos.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun Customer(customerViewModel: CustomerViewModel, navController: NavHostController, id: String) {
+fun Customer(customerViewModel: CustomerViewModel, paymentViewModel: PaymentViewModel, navController: NavHostController, id: String) {
     var payments = customerViewModel.customer.payments
     var selectedTab by remember { mutableStateOf(0) }
-
 
     LaunchedEffect(key1 = true) {
         customerViewModel.resetCustomer()
@@ -59,7 +55,8 @@ fun Customer(customerViewModel: CustomerViewModel, navController: NavHostControl
             .fillMaxWidth()
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top=10.dp)
         ) {
             Text(
                 "Customer Details",
@@ -83,36 +80,55 @@ fun Customer(customerViewModel: CustomerViewModel, navController: NavHostControl
             }
         }
         Text(
+            customerViewModel.customer.name ?: "",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
+        )
+        Text(
             customerViewModel.customer.email ?: "",
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
         )
-        OutlinedTextField(
-            value = customerViewModel.customer.name ?: "",
-            onValueChange = {
-            },
-            label = { Text("Name") },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
+        Text(
+            "Lifetime payments: " + customerViewModel.customer.ltv?.let { FormattedPriceLabel(it.toDouble()) },
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
         )
-        OutlinedTextField(
-            value = customerViewModel.customer.email ?: "",
-            onValueChange = {
-            },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
+        Text(
+            "Lifetime purchases: " + (customerViewModel.customer.payments?.size ?: 0),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
         )
-        HorizontalDivider()
-        SecondaryTabRow(selectedTabIndex = selectedTab) {
+
+//        OutlinedTextField(
+//            value = customerViewModel.customer.name ?: "",
+//            onValueChange = {
+//            },
+//            label = { Text("Name") },
+//            keyboardOptions = KeyboardOptions(
+//                capitalization = KeyboardCapitalization.Words
+//            ),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 8.dp)
+//        )
+//        OutlinedTextField(
+//            value = customerViewModel.customer.email ?: "",
+//            onValueChange = {
+//            },
+//            label = { Text("Email") },
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Email
+//            ),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 8.dp)
+//        )
+//        HorizontalDivider()
+        SecondaryTabRow(
+            selectedTabIndex = selectedTab,
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp)
+        ) {
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
@@ -124,26 +140,29 @@ fun Customer(customerViewModel: CustomerViewModel, navController: NavHostControl
                 text = { Text("Past Payments") }
             )
         }
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Secondary tab ${selectedTab + 1} selected",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Column() {
-            if (payments.isNullOrEmpty()) {
-                Text("No previous payments")
-            } else {
-                payments.forEach() { payment ->
-                    Text(payment.id ?: "ID Missing")
+        if (selectedTab == 0) {
+            Column(
+            ) {
+                if (payments.isNullOrEmpty()) {
+                    Text("No previous payments")
+                } else {
+                    payments.forEach() { payment ->
+                        PaymentCard(customerViewModel.customer, payment, paymentViewModel, navController)
+                    }
                 }
             }
+        } else {
+            Text("Previous payments go here")
+        }
+    }
+}
 
-            //var context = LocalContext.current
-            //var emailSearch by remember { mutableStateOf("") }
+//var context = LocalContext.current
+//var emailSearch by remember { mutableStateOf("") }
 //    var email by remember { mutableStateOf("") }
 //    var name by remember { mutableStateOf( "") }
 //    val id by remember { mutableStateOf("") }
-            //val controller = LocalSoftwareKeyboardController.current
+//val controller = LocalSoftwareKeyboardController.current
 
 //    Row(
 //        modifier = Modifier.padding(start = 10.dp, top = 70.dp, end = 10.dp, bottom = 8.dp)
@@ -298,6 +317,3 @@ fun Customer(customerViewModel: CustomerViewModel, navController: NavHostControl
 //            Text("NOT FOUND")
 //        }
 
-        }
-    }
-}

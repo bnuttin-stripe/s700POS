@@ -15,7 +15,8 @@ data class Customer(
     val id: String? = null,
     val name: String? = null,
     val email: String? = null,
-    val payments: List<PaymentIntent>? = listOf()
+    val payments: List<PaymentIntent>? = listOf(),
+    var ltv: Int? = 0
 )
 
 class CustomerViewModel : ViewModel() {

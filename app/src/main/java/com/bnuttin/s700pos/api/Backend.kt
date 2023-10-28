@@ -9,6 +9,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -48,10 +49,14 @@ class MyApp : Application() {
     }
 }
 
+val interceptor = HttpLoggingInterceptor().apply {
+    this.level = HttpLoggingInterceptor.Level.BODY
+}
 val okHttpClient = OkHttpClient.Builder()
     .readTimeout(20, TimeUnit.SECONDS)
     .connectTimeout(20, TimeUnit.SECONDS)
     //.addInterceptor(BasicAuthInterceptor(SK,""))
+    .addInterceptor(interceptor)
     .build()
 
 private var json = Json {
@@ -85,6 +90,9 @@ interface CustomerApi {
 interface PaymentApi {
     @POST("payment-intent")
     suspend fun createPaymentIntent(@Body paymentIntent: PaymentIntent) : PaymentIntent
+
+    @POST("bopis-picked-up")
+    suspend fun bopisPickedUp(@Body id: String) : PaymentIntent
 }
 
 interface TerminalApi {

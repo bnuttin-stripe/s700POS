@@ -42,6 +42,7 @@ import com.bnuttin.s700pos.theme.S700POSTheme
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
 import com.stripe.stripeterminal.Terminal
@@ -204,6 +205,7 @@ fun mainContent() {
     val customerViewModel: CustomerViewModel = viewModel()
     val checkoutViewModel: CheckoutViewModel = viewModel()
     val settingsViewModel: SettingsViewModel = viewModel()
+    val paymentViewModel: PaymentViewModel = viewModel()
 
     S700POSTheme {
         Scaffold(
@@ -287,7 +289,7 @@ fun mainContent() {
                     val customerId = navBackStackEntry.arguments?.getString("customerId")
                     /* We check if is null */
                     customerId?.let {
-                        Customer(customerViewModel, navController, customerId)
+                        Customer(customerViewModel, paymentViewModel, navController, customerId)
                     }
                 }
                 composable("settings") {

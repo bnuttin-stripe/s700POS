@@ -23,16 +23,16 @@ import com.example.s700pos.R
 @Composable
 fun CustomerCard(customer: Customer, navController: NavController) {
     Column(
-        //verticalArrangement = Arrangement.spacedBy(10.dp)
+        //verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(top = 5.dp, bottom = 5.dp, start = 0.dp, end = 0.dp)
+                .padding(bottom = 8.dp)
                 .height(48.dp)
                 //.background(MaterialTheme.colorScheme.primary)
                 .background(Color.LightGray)
-                .padding(top = 0.dp, bottom = 0.dp, start = 3.dp, end = 3.dp)
+                .padding(start = 8.dp, end = 8.dp)
                 .clickable(onClick = {
                     navController.navigate("customer/" + customer.id)
                 })

@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,41 +23,55 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bnuttin.s700pos.viewmodels.Customer
+import com.bnuttin.s700pos.viewmodels.PaymentIntent
+import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.example.s700pos.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentCard(customer: Customer, navController: NavController) {
+fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: PaymentViewModel, navController: NavController) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Column(
         //verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(top = 5.dp, bottom = 5.dp, start = 0.dp, end = 0.dp)
+                .padding(bottom = 8.dp)
                 .height(48.dp)
                 //.background(MaterialTheme.colorScheme.primary)
                 .background(Color.LightGray)
-                .padding(top = 0.dp, bottom = 0.dp, start = 3.dp, end = 3.dp)
+                .padding(start = 8.dp, end = 8.dp)
                 .clickable(onClick = {
-                    navController.navigate("customer/" + customer.id)
+                    paymentViewModel.bopisPickedUp(id = payment.id!!)
                 })
         ){
             Icon(
-                painterResource(R.drawable.person),
-                contentDescription = "Customer",
+                painterResource(R.drawable.credit_card),
+                contentDescription = "Card",
                 modifier = Modifier
                     //.size(36.dp)
                     .padding(end = 4.dp)
             )
             Text(
-                text = customer.name ?: "",
+                text = payment.id ?: "",
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = customer.email ?: "",
+                text = payment.amount?.let { FormattedPriceLabel(it.toDouble()) } ?: "",
                 fontSize = 18.sp
             )
         }
     }
+
+
+
+//
+//    if (showBottomSheet) {
+//        ModalBottomSheet(onDismissRequest = { /* Executed when the sheet is dismissed */ }) {
+//            Text("Refund functionality goes here")
+//        }
+//    }
 }
