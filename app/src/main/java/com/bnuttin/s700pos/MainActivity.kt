@@ -32,9 +32,9 @@ import com.bnuttin.s700pos.api.SettingsViewModel
 import com.bnuttin.s700pos.api.TokenProvider
 import com.bnuttin.s700pos.api.discoveryCancelable
 import com.bnuttin.s700pos.pages.Checkout
-import com.bnuttin.s700pos.pages.Customer
+import com.bnuttin.s700pos.pages.CustomerDetails
 import com.bnuttin.s700pos.pages.CustomerList
-import com.bnuttin.s700pos.pages.Payments
+import com.bnuttin.s700pos.pages.PaymentDetails
 import com.bnuttin.s700pos.pages.QRSCanner
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
@@ -276,27 +276,34 @@ fun mainContent() {
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() }
             ) {
+                // SHOPPING
                 composable("shop") {
                     Shop(productViewModel, cartViewModel)
                 }
                 composable("checkout") {
                     Checkout(cartViewModel, checkoutViewModel)
                 }
+
+                // CUSTOMER MANAGEMENT
                 composable("customers") {
                     CustomerList(customerViewModel, navController)
                 }
                 composable("customer/{customerId}") { navBackStackEntry ->
                     val customerId = navBackStackEntry.arguments?.getString("customerId")
-                    /* We check if is null */
                     customerId?.let {
-                        Customer(customerViewModel, paymentViewModel, navController, customerId)
+                        CustomerDetails(customerViewModel, paymentViewModel, navController, customerId)
                     }
                 }
+                composable("payment/{paymentId}") {navBackStackEntry ->
+                    val paymentId = navBackStackEntry.arguments?.getString("paymentId")
+                    paymentId?.let {
+                        PaymentDetails(customerViewModel, paymentViewModel, navController, paymentId)
+                    }
+                }
+
+                // SETTINGS
                 composable("settings") {
                     Settings(settingsViewModel, navController)
-                }
-                composable("payments") {
-                    Payments(customerViewModel)
                 }
                 composable("qrscanner") {
                     QRSCanner(settingsViewModel, navController)

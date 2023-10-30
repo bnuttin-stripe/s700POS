@@ -44,7 +44,7 @@ fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: Pa
                 .background(Color.LightGray)
                 .padding(start = 8.dp, end = 8.dp)
                 .clickable(onClick = {
-                    paymentViewModel.bopisPickedUp(id = payment.id!!)
+                    navController.navigate("payment/" + payment.id)
                 })
         ){
             Icon(
@@ -55,7 +55,7 @@ fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: Pa
                     .padding(end = 4.dp)
             )
             Text(
-                text = payment.id ?: "",
+                text = payment.description ?: "",
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.weight(1f))

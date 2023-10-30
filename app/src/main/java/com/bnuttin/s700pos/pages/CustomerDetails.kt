@@ -39,13 +39,21 @@ import com.example.s700pos.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun Customer(customerViewModel: CustomerViewModel, paymentViewModel: PaymentViewModel, navController: NavHostController, id: String) {
-    var payments = customerViewModel.customer.payments
+fun CustomerDetails(
+    customerViewModel: CustomerViewModel,
+    paymentViewModel: PaymentViewModel,
+    navController: NavHostController,
+    id: String,
+) {
+    val payments = paymentViewModel.customerPayments
     var selectedTab by remember { mutableStateOf(0) }
+    // TODO put the main customer data into remmeber blocks so we don't requery every time we go to the page?
 
     LaunchedEffect(key1 = true) {
         customerViewModel.resetCustomer()
+        paymentViewModel.resetCustomerPayments()
         customerViewModel.getCustomer(id)
+        paymentViewModel.getCustomerPayments(id)
     }
 
     Column(
@@ -56,7 +64,6 @@ fun Customer(customerViewModel: CustomerViewModel, paymentViewModel: PaymentView
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top=10.dp)
         ) {
             Text(
                 "Customer Details",
@@ -80,24 +87,28 @@ fun Customer(customerViewModel: CustomerViewModel, paymentViewModel: PaymentView
             }
         }
         Text(
-            customerViewModel.customer.name ?: "",
-            fontSize = 18.sp,
+            "Name: " + customerViewModel.customer.name ?: "",
+            //fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            customerViewModel.customer.email ?: "",
-            fontSize = 18.sp,
+            "Email: " + customerViewModel.customer.email ?: "",
+            //fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             "Lifetime payments: " + customerViewModel.customer.ltv?.let { FormattedPriceLabel(it.toDouble()) },
-            fontSize = 18.sp,
+            //fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            "Lifetime purchases: " + (customerViewModel.customer.payments?.size ?: 0),
-            fontSize = 18.sp,
+            "Lifetime purchases: " + (customerViewModel.customer.payments ?: 0),
+            //fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
 
 //        OutlinedTextField(
@@ -144,15 +155,38 @@ fun Customer(customerViewModel: CustomerViewModel, paymentViewModel: PaymentView
             Column(
             ) {
                 if (payments.isNullOrEmpty()) {
-                    Text("No previous payments")
+                    Text("No pending BOPIS orders")
                 } else {
                     payments.forEach() { payment ->
-                        PaymentCard(customerViewModel.customer, payment, paymentViewModel, navController)
+                        if (payment.metadata?.bopis == "pending") {
+                            PaymentCard(
+                                customerViewModel.customer,
+                                payment,
+                                paymentViewModel,
+                                navController
+                            )
+                        }
                     }
                 }
             }
         } else {
-            Text("Previous payments go here")
+            Column(
+            ) {
+                if (payments.isNullOrEmpty()) {
+                    Text("No previous payments")
+                } else {
+                    payments.forEach() { payment ->
+                        if (payment.metadata?.bopis != "pending") {
+                            PaymentCard(
+                                customerViewModel.customer,
+                                payment,
+                                paymentViewModel,
+                                navController
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ import com.example.s700pos.R
 
 @Composable
 fun CustomerCard(customer: Customer, navController: NavController) {
+
     Column(
         //verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {

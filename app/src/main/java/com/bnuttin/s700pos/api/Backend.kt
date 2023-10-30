@@ -88,11 +88,17 @@ interface CustomerApi {
 }
 
 interface PaymentApi {
+    @GET("payment_intents/{customerId}")
+    suspend fun getPaymentIntents(@Path("customerId") id: String) : List<PaymentIntent>
+
+    @GET("payment_intent/{id}")
+    suspend fun getPaymentIntent(@Path("id") id: String) : PaymentIntent
+
     @POST("payment-intent")
     suspend fun createPaymentIntent(@Body paymentIntent: PaymentIntent) : PaymentIntent
 
     @POST("bopis-picked-up")
-    suspend fun bopisPickedUp(@Body id: String) : PaymentIntent
+    suspend fun bopisPickedUp(@Body paymentIntent: PaymentIntent) : PaymentIntent
 }
 
 interface TerminalApi {

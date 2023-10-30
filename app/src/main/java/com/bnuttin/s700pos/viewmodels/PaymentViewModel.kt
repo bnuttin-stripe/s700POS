@@ -1,6 +1,5 @@
 package com.bnuttin.s700pos.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,43 +11,86 @@ import kotlinx.serialization.Serializable
 import java.io.IOException
 
 @Serializable
+data class PaymentIntentMetadata(
+    val bopis: String? = null,
+    val receipt_id: String? = null,
+    val items: String? = null
+)
+
+@Serializable
 data class PaymentIntent(
     val id: String? = null,
     val amount: Int? = null,
+    val amount_received: Int? = null,
+    val description: String? = null,
     val status: String? = null,
-    val client_secret: String? = null
+    val client_secret: String? = null,
+    val metadata: PaymentIntentMetadata? = null
 )
 
 class PaymentViewModel: ViewModel() {
-    var statusPaymentIntent by mutableStateOf("")
-    var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent())
+    var status by mutableStateOf("")
+    var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent()) // RENAME TO newPaymentIntent?
+    var customerPayments: List<PaymentIntent> by mutableStateOf(listOf())
 
-    fun createPaymentIntent(amount: Int){
-        statusPaymentIntent = "loading"
-        paymentIntent = PaymentIntent(amount = amount)
+    fun resetCustomerPayments(){
+        customerPayments = listOf()
+    }
+
+    fun getCustomerPayments(customerId: String){
+        status = "loading"
+
         viewModelScope.launch{
             try {
-                paymentIntent = POSApi.payment.createPaymentIntent(PaymentIntent(amount = amount))
-                statusPaymentIntent = "done"
+                customerPayments = POSApi.payment.getPaymentIntents(customerId)
+                status = "done"
             } catch (e: IOException) {
-                statusPaymentIntent = "error"
+                status = "error"
             }
         }
     }
 
-    // TODO change the parameter to a PaymentIntent (and add metadata to the PaymentIntent class)
-    fun bopisPickedUp(id: String) {
-        var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent())
-
-        Log.d("BENJI", id)
-
+    fun getPaymentIntent(intentId: String) : PaymentIntent{
+        status = "loading"
 
         viewModelScope.launch{
             try {
-                paymentIntent = POSApi.payment.bopisPickedUp(id)
+                paymentIntent = POSApi.payment.getPaymentIntent(intentId)
+                status = "done"
             } catch (e: IOException) {
-                e.printStackTrace()
+                status = "error"
             }
         }
+
+        return paymentIntent
+    }
+
+    fun createPaymentIntent(amount: Int){
+        status = "loading"
+        paymentIntent = PaymentIntent(amount = amount)
+        viewModelScope.launch{
+            try {
+                paymentIntent = POSApi.payment.createPaymentIntent(PaymentIntent(amount = amount))
+                status = "done"
+            } catch (e: IOException) {
+                status = "error"
+            }
+        }
+    }
+
+    fun bopisPickedUp(intentId: String) : PaymentIntent{
+        status = "loading"
+
+        viewModelScope.launch{
+            try {
+                paymentIntent = POSApi.payment.bopisPickedUp(paymentIntent)
+                status = "done"
+            } catch (e: IOException) {
+                e.printStackTrace()
+                status = "done"
+            }
+        }
+
+        return paymentIntent
     }
 }

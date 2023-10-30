@@ -12,10 +12,10 @@ import java.io.IOException
 
 @Serializable
 data class Customer(
-    val id: String? = null,
-    val name: String? = null,
-    val email: String? = null,
-    val payments: List<PaymentIntent>? = listOf(),
+    val id: String? = "",
+    val name: String? = "",
+    val email: String? = "",
+    val payments: Int? = 0,
     var ltv: Int? = 0
 )
 
@@ -56,6 +56,7 @@ class CustomerViewModel : ViewModel() {
         customer = Customer()
     }
 
+    // TODO should be passing a customer class to this function
     fun updateCustomer(id: String, name: String, email: String) {
         status = "loading"
         customer = Customer()
