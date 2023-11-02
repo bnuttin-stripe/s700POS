@@ -13,8 +13,9 @@ import java.io.IOException
 @Serializable
 data class PaymentIntentMetadata(
     val bopis: String? = null,
-    val receipt_id: String? = null,
-    val items: String? = null
+    val order: String? = null,
+    val cart: String? = null,
+    val channel: String? = null
 )
 
 @Serializable

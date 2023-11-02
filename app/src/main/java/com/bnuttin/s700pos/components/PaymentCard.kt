@@ -55,7 +55,7 @@ fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: Pa
                     .padding(end = 4.dp)
             )
             Text(
-                text = payment.description ?: "",
+                text = payment.metadata?.order ?: "",
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.weight(1f))

@@ -60,7 +60,6 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
             .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

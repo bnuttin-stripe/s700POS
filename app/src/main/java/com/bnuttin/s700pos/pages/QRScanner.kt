@@ -10,11 +10,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,24 +19,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.api.PrefRepository
 import com.bnuttin.s700pos.api.QrCodeAnalyzer
 import com.bnuttin.s700pos.api.SettingsViewModel
+import com.bnuttin.s700pos.components.TopRow
 import com.example.s700pos.R
 import org.json.JSONObject
 
 @Composable
 fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostController) {
+    // Sample QR code: {"seller":"Benjamin Nuttin","backend":"http://hello.world:3000"}
+
     var context = LocalContext.current
     val prefRepository = PrefRepository(context)
 
@@ -72,21 +67,14 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
     ) {
-        Row() {
-            Text(
-                "Settings QR Scanner",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { navController.navigate("settings") }) {
-                Icon(
-                    painterResource(R.drawable.outline_arrow_back_24),
-                    contentDescription = "Back",
-                    tint = Color.DarkGray
-                )
-            }
-        }
+        TopRow(
+            title = "Settings QR Scanner",
+            onClick = { navController.navigate("settings") },
+            status = "done",
+            icon = R.drawable.outline_arrow_back_24,
+            label = "Back",
+            modifier = Modifier
+        )
 
         if (hasCamPermission) {
             AndroidView(

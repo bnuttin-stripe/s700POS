@@ -11,7 +11,7 @@ class TokenProvider : ConnectionTokenProvider {
             // JSON response from Stripe. When the request to your backend succeeds,
             // return the `secret` from the response to the SDK.
             //val secret = "pst_test_YWNjdF8xS0x4dFlIS2xYaEg2UEJ3LG1FcHdWMm4zbWFXdXFCdUpIdVlxcHpSTHBBNVNJSXE_00EzDpBsmn"
-            val secret = "sk_test_51KLxtYHKlXhH6PBwy2ByjIVApqXXGuWYZhkZlSTPSBcq34bmNKsFn0kcuTX7qEmq8tt8tQfY7ujBsUAW09xtU6kC00RNmH5qeg"
+            val secret = "sk_test_51O7Pg4FyN0fE9mUHLdRk5UmB101F5RbxD2VYLehdsMuwLf7ynCUvm4H7V00YA63QpMK4bfTaHemdwavrVEh7SZyg00F2AD21jg"
             callback.onSuccess(secret)
         } catch (e: Exception) {
             callback.onFailure(

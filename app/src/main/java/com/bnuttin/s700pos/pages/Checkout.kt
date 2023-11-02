@@ -1,8 +1,6 @@
 package com.bnuttin.s700pos.pages
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -11,20 +9,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bnuttin.s700pos.api.PrefRepository
 import com.bnuttin.s700pos.components.Cart
+import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.example.s700pos.R
@@ -41,23 +34,15 @@ fun Checkout(
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                "Checkout",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.weight(weight = 1f))
-            IconButton(onClick = { cartViewModel.emptyCart() }) {
-                Icon(
-                    painterResource(R.drawable.baseline_remove_shopping_cart_24),
-                    contentDescription = "Back",
-                    tint = Color.DarkGray
-                )
-            }
-        }
+        TopRow(
+            title = "Checkout",
+            onClick = { cartViewModel.emptyCart() },
+            status = "done",
+            icon = R.drawable.baseline_remove_shopping_cart_24,
+            label = "Empty Cart",
+            modifier = Modifier
+        )
+
         Cart(cartViewModel)
         Button(
             onClick = {
