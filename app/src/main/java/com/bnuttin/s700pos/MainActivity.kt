@@ -38,6 +38,7 @@ import com.bnuttin.s700pos.pages.Checkout
 import com.bnuttin.s700pos.pages.CustomerDetails
 import com.bnuttin.s700pos.pages.CustomerList
 import com.bnuttin.s700pos.pages.PaymentDetails
+import com.bnuttin.s700pos.pages.PaymentList
 import com.bnuttin.s700pos.pages.QRSCanner
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
@@ -236,10 +237,12 @@ fun mainContent() {
                         IconButton(onClick = { navController.navigate("checkout") }) {
                             BadgedBox(badge = {
                                 if (cartViewModel.items.isNotEmpty()) {
-                                    Badge (
+                                    Badge(
                                         containerColor = Color.Red,
-                                        modifier = Modifier.padding(bottom = 5.dp).size(10.dp)
-                                            ) {
+                                        modifier = Modifier
+                                            .padding(bottom = 5.dp)
+                                            .size(10.dp)
+                                    ) {
                                     }
                                 }
                             }) {
@@ -250,20 +253,16 @@ fun mainContent() {
                             }
                         }
                         IconButton(onClick = { navController.navigate("customers") }) {
-//                            BadgedBox(badge = {
-//                                if (customerViewModel.customer.id !== null) {
-//                                    Badge(
-//                                        containerColor = Green
-//                                    ) {
-//                                        Text("")
-//                                    }
-//                                }
-//                            }) {
-                                Icon(
-                                    painterResource(R.drawable.person),
-                                    contentDescription = "Customer",
-                                )
-//                            }
+                            Icon(
+                                painterResource(R.drawable.person),
+                                contentDescription = "Customer",
+                            )
+                        }
+                        IconButton(onClick = { navController.navigate("payments") }) {
+                            Icon(
+                                painterResource(R.drawable.payments),
+                                contentDescription = "Payments",
+                            )
                         }
                         IconButton(onClick = { navController.navigate("settings") }) {
                             Icon(
@@ -296,14 +295,32 @@ fun mainContent() {
                 composable("customer/{customerId}") { navBackStackEntry ->
                     val customerId = navBackStackEntry.arguments?.getString("customerId")
                     customerId?.let {
-                        CustomerDetails(customerViewModel, paymentViewModel, navController, customerId)
+                        CustomerDetails(
+                            customerViewModel,
+                            paymentViewModel,
+                            navController,
+                            customerId
+                        )
                     }
                 }
-                composable("payment/{paymentId}") {navBackStackEntry ->
+                composable("payment/{paymentId}") { navBackStackEntry ->
                     val paymentId = navBackStackEntry.arguments?.getString("paymentId")
                     paymentId?.let {
-                        PaymentDetails(customerViewModel, paymentViewModel, navController, paymentId)
+                        PaymentDetails(
+                            customerViewModel,
+                            paymentViewModel,
+                            navController,
+                            paymentId
+                        )
                     }
+                }
+
+                // ALL PAYMENTS
+                composable("payments") { navBackStackEntry ->
+                    PaymentList(
+                        paymentViewModel,
+                        navController
+                    )
                 }
 
                 // SETTINGS

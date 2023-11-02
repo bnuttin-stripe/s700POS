@@ -29,7 +29,12 @@ import com.example.s700pos.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: PaymentViewModel, navController: NavController) {
+fun PaymentCard(
+    customer: Customer,
+    payment: PaymentIntent,
+    paymentViewModel: PaymentViewModel,
+    navController: NavController,
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Column(
@@ -46,13 +51,24 @@ fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: Pa
                 .clickable(onClick = {
                     navController.navigate("payment/" + payment.id)
                 })
-        ){
+        ) {
             Icon(
-                painterResource(R.drawable.credit_card),
-                contentDescription = "Card",
+                painterResource(
+                    if (payment.metadata?.channel == "online") {
+                        R.drawable.outline_language_24
+                    } else {
+                        R.drawable.outline_store_24
+                    }
+                ),
+                contentDescription = "Channel",
                 modifier = Modifier
-                    //.size(36.dp)
                     .padding(end = 4.dp)
+            )
+            Text(
+                text = "Nov 2",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(start = 4.dp)
             )
             Text(
                 text = payment.metadata?.order ?: "",
@@ -65,7 +81,6 @@ fun PaymentCard(customer: Customer, payment: PaymentIntent, paymentViewModel: Pa
             )
         }
     }
-
 
 
 //
