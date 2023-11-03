@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.components.FormattedPriceLabel
 import com.bnuttin.s700pos.components.PaymentCard
@@ -59,25 +60,25 @@ fun CustomerDetails(
         )
         Text(
             "Name: " + customerViewModel.customer.name ?: "",
-            //fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             "Email: " + customerViewModel.customer.email ?: "",
-            //fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             "Lifetime payments: " + customerViewModel.customer.ltv?.let { FormattedPriceLabel(it.toDouble()) },
-            //fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             "Lifetime purchases: " + (customerViewModel.customer.payments ?: 0),
-            //fontSize = 20.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -131,9 +132,7 @@ fun CustomerDetails(
                     payments.forEach() { payment ->
                         if (payment.metadata?.bopis == "pending") {
                             PaymentCard(
-                                customerViewModel.customer,
                                 payment,
-                                paymentViewModel,
                                 navController
                             )
                         }
@@ -149,9 +148,7 @@ fun CustomerDetails(
                     payments.forEach() { payment ->
                         if (payment.metadata?.bopis != "pending") {
                             PaymentCard(
-                                customerViewModel.customer,
                                 payment,
-                                paymentViewModel,
                                 navController
                             )
                         }

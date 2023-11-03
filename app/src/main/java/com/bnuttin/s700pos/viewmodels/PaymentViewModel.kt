@@ -15,7 +15,8 @@ data class PaymentIntentMetadata(
     val bopis: String? = null,
     val order: String? = null,
     val cart: String? = null,
-    val channel: String? = null
+    val channel: String? = null,
+    val store: String? = null
 )
 
 @Serializable
@@ -26,16 +27,34 @@ data class PaymentIntent(
     val description: String? = null,
     val status: String? = null,
     val client_secret: String? = null,
-    val metadata: PaymentIntentMetadata? = null
+    val metadata: PaymentIntentMetadata? = null,
+    var created: Long? = null
 )
 
 class PaymentViewModel: ViewModel() {
     var status by mutableStateOf("")
     var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent()) // RENAME TO newPaymentIntent?
     var customerPayments: List<PaymentIntent> by mutableStateOf(listOf())
+    // TODO rename variables
+
+    init {
+        searchPayments("")
+    }
 
     fun resetCustomerPayments(){
         customerPayments = listOf()
+    }
+
+    fun searchPayments(search: String?) {
+        status = "loading"
+        viewModelScope.launch {
+            try {
+                customerPayments = POSApi.payment.searchPayments(search ?: "")
+                status = "done"
+            } catch (e: IOException) {
+                status = "error"
+            }
+        }
     }
 
     fun getCustomerPayments(customerId: String){

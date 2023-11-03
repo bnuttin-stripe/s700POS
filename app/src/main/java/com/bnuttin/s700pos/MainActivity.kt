@@ -303,6 +303,14 @@ fun mainContent() {
                         )
                     }
                 }
+
+                // PAYMENTS
+                composable("payments") { navBackStackEntry ->
+                    PaymentList(
+                        paymentViewModel,
+                        navController
+                    )
+                }
                 composable("payment/{paymentId}") { navBackStackEntry ->
                     val paymentId = navBackStackEntry.arguments?.getString("paymentId")
                     paymentId?.let {
@@ -313,14 +321,6 @@ fun mainContent() {
                             paymentId
                         )
                     }
-                }
-
-                // ALL PAYMENTS
-                composable("payments") { navBackStackEntry ->
-                    PaymentList(
-                        paymentViewModel,
-                        navController
-                    )
                 }
 
                 // SETTINGS

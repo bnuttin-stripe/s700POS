@@ -1,19 +1,19 @@
 package com.bnuttin.s700pos.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -21,39 +21,49 @@ import com.bnuttin.s700pos.viewmodels.Customer
 import com.example.s700pos.R
 
 @Composable
-fun CustomerCard(customer: Customer, navController: NavController) {
-
+fun CustomerCard(
+    customer: Customer,
+    navController: NavController
+) {
     Column(
-        //verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        ListItem(
+            headlineContent = {
+                Row() {
+                    Text(
+                        text = customer.name ?: "",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = FormattedPriceLabel(amount = customer.ltv ?: 0.0),
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            supportingContent = {
+                Row(
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Text(customer.email ?: "")
+                }
+            },
+            leadingContent = {
+                Icon(
+                    painterResource(R.drawable.person),
+                    contentDescription = "Person",
+                    modifier = Modifier
+                )
+            },
             modifier = Modifier
-                .padding(bottom = 8.dp)
-                .height(48.dp)
-                //.background(MaterialTheme.colorScheme.primary)
-                .background(Color.LightGray)
-                .padding(start = 8.dp, end = 8.dp)
                 .clickable(onClick = {
                     navController.navigate("customer/" + customer.id)
                 })
-        ){
-            Icon(
-                painterResource(R.drawable.person),
-                contentDescription = "Customer",
-                modifier = Modifier
-                    //.size(36.dp)
-                    .padding(end = 4.dp)
-            )
-            Text(
-                text = customer.name ?: "",
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = customer.email ?: "",
-                fontSize = 18.sp
-            )
-        }
+        )
+        HorizontalDivider()
     }
+
 }

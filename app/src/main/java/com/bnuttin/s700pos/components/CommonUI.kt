@@ -22,16 +22,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.s700pos.R
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun FormattedPriceLabel(amount: Double, modifier: Modifier = Modifier): String {
     val price = amount / 100
     return "$%.2f".format(price)
+}
+
+@Composable
+fun FormattedDate(date: Long, modifier: Modifier = Modifier): String {
+    val dt = Date(date * 1000)
+    return DateFormat.getDateInstance().format(dt);
 }
 
 @Composable
@@ -90,6 +99,7 @@ fun PrettyButton(
                     modifier = Modifier
                         .size(28.dp)
                         .padding(end = 8.dp)
+                        .graphicsLayer { rotationX = if ( icon == R.drawable.baseline_subdirectory_arrow_left_24) 180f else 0f }
                 )
                 Text(label)
             }
@@ -106,28 +116,6 @@ fun PrettyButton(
                 tint = Color.DarkGray
             )
         }
-//        if (status == "loading") {
-//            CircularProgressIndicator(
-//                color = Color.White,
-//                strokeWidth = 2.dp,
-//                modifier = Modifier.size(ButtonDefaults.IconSize)
-//            )
-//        } else {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.padding(start = 0.dp, end = 0.dp)
-//            ) {
-//                Icon(
-//                    painterResource(icon),
-//                    contentDescription = label,
-//                    tint = Color.White,
-//                    modifier = Modifier
-//                        .size(28.dp)
-//                        .padding(end = 8.dp)
-//                )
-//                Text(label)
-//            }
-//        }
     }
 }
 
@@ -194,3 +182,4 @@ fun TopRow(
         )
     }
 }
+

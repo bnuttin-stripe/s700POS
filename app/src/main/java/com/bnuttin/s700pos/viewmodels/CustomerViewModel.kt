@@ -16,7 +16,7 @@ data class Customer(
     val name: String? = "",
     val email: String? = "",
     val payments: Int? = 0,
-    var ltv: Int? = 0
+    var ltv: Double? = 0.0
 )
 
 class CustomerViewModel : ViewModel() {
@@ -28,11 +28,11 @@ class CustomerViewModel : ViewModel() {
         searchCustomers("")
     }
 
-    fun searchCustomers(email: String?) {
+    fun searchCustomers(search: String?) {
         status = "loading"
         viewModelScope.launch {
             try {
-                customers = POSApi.customer.getCustomers(email = email ?: "")
+                customers = POSApi.customer.searchCustomers(search ?: "")
                 status = "done"
             } catch (e: IOException) {
                 status = "error"

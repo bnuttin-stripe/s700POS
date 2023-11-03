@@ -1,92 +1,106 @@
 package com.bnuttin.s700pos.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.PaymentIntent
-import com.bnuttin.s700pos.viewmodels.PaymentViewModel
+import com.bnuttin.s700pos.viewmodels.PaymentIntentMetadata
 import com.example.s700pos.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentCard(
-    customer: Customer,
     payment: PaymentIntent,
-    paymentViewModel: PaymentViewModel,
     navController: NavController,
 ) {
-    var showBottomSheet by remember { mutableStateOf(false) }
-
     Column(
-        //verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        ListItem(
+            headlineContent = {
+                Row() {
+                    Text(
+                        text = payment.metadata?.order ?: "",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        text = payment.amount?.let { FormattedPriceLabel(it.toDouble()) } ?: "",
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            supportingContent = {
+                Row(
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Text(FormattedDate(payment.created ?: 0))
+                    if (payment.metadata?.channel == "online") {
+                        Text(" @ Online")
+                    } else {
+                        Text((" @ " + payment.metadata?.store) ?: "")
+                    }
+                }
+            },
+            leadingContent = {
+                Icon(
+                    painterResource(
+                        if (payment.metadata?.channel == "online") {
+                            R.drawable.outline_language_24
+                        } else {
+                            R.drawable.outline_store_24
+                        }
+                    ),
+                    contentDescription = "Channel",
+                    modifier = Modifier
+                )
+            },
             modifier = Modifier
-                .padding(bottom = 8.dp)
-                .height(48.dp)
-                //.background(MaterialTheme.colorScheme.primary)
-                .background(Color.LightGray)
-                .padding(start = 8.dp, end = 8.dp)
                 .clickable(onClick = {
                     navController.navigate("payment/" + payment.id)
                 })
-        ) {
-            Icon(
-                painterResource(
-                    if (payment.metadata?.channel == "online") {
-                        R.drawable.outline_language_24
-                    } else {
-                        R.drawable.outline_store_24
-                    }
-                ),
-                contentDescription = "Channel",
-                modifier = Modifier
-                    .padding(end = 4.dp)
-            )
-            Text(
-                text = "Nov 2",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .padding(start = 4.dp)
-            )
-            Text(
-                text = payment.metadata?.order ?: "",
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = payment.amount?.let { FormattedPriceLabel(it.toDouble()) } ?: "",
-                fontSize = 18.sp
-            )
-        }
+        )
+        HorizontalDivider()
     }
+}
 
-
-//
-//    if (showBottomSheet) {
-//        ModalBottomSheet(onDismissRequest = { /* Executed when the sheet is dismissed */ }) {
-//            Text("Refund functionality goes here")
-//        }
-//    }
+@Preview(
+    showBackground = true
+)
+@Composable
+fun PaymentCardPreview() {
+    PaymentCard(
+        payment = PaymentIntent(
+            id = "pi_3O83bmFyN0fE9mUH175qt0e4",
+            amount = 2600,
+            amount_received = 2600,
+            description = "Hello world",
+            status = "Successful",
+            metadata = PaymentIntentMetadata(
+                bopis = "Pending",
+                order = "PRESS-123",
+                channel = "offline",
+                cart = "price_1O7PqAFyN0fE9mUHlNJItP0r, price_1O7PpWFyN0fE9mUHjZTlTRmo",
+                store = "Chicago Lincoln Park"
+            ),
+            created = 1698941905
+        ), navController = NavController(LocalContext.current)
+    )
 }

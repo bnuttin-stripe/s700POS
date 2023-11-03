@@ -15,7 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -52,6 +55,10 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
     var backendUrl by remember { mutableStateOf(settingsViewModel.getBackendUrl()) }
     var formValid: Boolean by remember { mutableStateOf(false) }
 
+    val options = listOf("USD", "EUR", "GBP")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
     fun checkForm() {
         formValid = sellerName.isNotEmpty() && Patterns.WEB_URL.matcher(backendUrl).matches();
     }
@@ -81,6 +88,7 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                     tint = Color.DarkGray
                 )
             }
+            Text(currency)
             IconButton(onClick = {
                 context.startActivity(
                     Intent(Intent.ACTION_VIEW)
@@ -101,21 +109,49 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                 checkForm()
             },
             label = { Text("Seller Name") },
+            //colors = TextFieldDefaults.colors(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         )
-        OutlinedTextField(
-            value = currency,
-            onValueChange = {
-                currency = it;
-                checkForm()
-            },
-            label = { Text("Currency") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-        )
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                ,
+                readOnly = true,
+                value = selectedOptionText,
+                onValueChange = {  },
+                label = { Text("Currency") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                //colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                //colors = TextFieldDefaults.colors()
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            expanded = false
+                            currency = selectionOption
+                            checkForm()
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    )
+                }
+            }
+        }
+
         OutlinedTextField(
             value = backendUrl,
             onValueChange = {

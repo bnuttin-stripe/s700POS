@@ -1,6 +1,7 @@
 package com.bnuttin.s700pos.pages
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -42,11 +43,28 @@ fun PaymentDetails(
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
+            .verticalScroll(rememberScrollState()),
+        content = function(customerViewModel, navController, paymentViewModel, paymentId)
+    )
+}
+
+@Composable
+private fun function(
+    customerViewModel: CustomerViewModel,
+    navController: NavHostController,
+    paymentViewModel: PaymentViewModel,
+    paymentId: String,
+): @Composable() (ColumnScope.() -> Unit) =
+    {
         TopRow(
             title = "Order Details",
-            onClick = { navController.navigate("customer/" + customerViewModel.customer.id) },
+            onClick = {
+                if ((customerViewModel.customer.id ?: "") === "") {
+                    navController.navigate("payments")
+                } else {
+                    navController.navigate("customer/" + customerViewModel.customer.id)
+                }
+            },
             status = paymentViewModel.status,
             icon = R.drawable.outline_arrow_back_24,
             label = "Back",
@@ -65,11 +83,10 @@ fun PaymentDetails(
             PrettyButton(
                 onClick = { },
                 status = paymentViewModel.status,
-                icon = R.drawable.baseline_arrow_upward_24,
+                icon = R.drawable.baseline_subdirectory_arrow_left_24,
                 label = "Refund",
                 modifier = Modifier
             )
         }
     }
-}
 

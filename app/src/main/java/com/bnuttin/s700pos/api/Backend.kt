@@ -77,8 +77,8 @@ interface ProductApi {
 }
 
 interface CustomerApi {
-    @GET("customers/{email}")
-    suspend fun getCustomers(@Path("email") email: String): List<Customer>
+    @GET("customers/{search}")
+    suspend fun searchCustomers(@Path("search") search: String): List<Customer>
 
     @GET("customer/{id}")
     suspend fun getCustomer(@Path("id") id: String) : Customer
@@ -88,6 +88,9 @@ interface CustomerApi {
 }
 
 interface PaymentApi {
+    @GET("payments/{search}")
+    suspend fun searchPayments(@Path("search") search: String): List<PaymentIntent>
+
     @GET("payment_intents/{customerId}")
     suspend fun getPaymentIntents(@Path("customerId") id: String) : List<PaymentIntent>
 
