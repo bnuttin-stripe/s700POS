@@ -115,7 +115,7 @@ fun CustomerDetails(
             Tab(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
-                text = { Text("BOPIS") }
+                text = { Text("Pick Up in Store") }
             )
             Tab(
                 selected = selectedTab == 1,

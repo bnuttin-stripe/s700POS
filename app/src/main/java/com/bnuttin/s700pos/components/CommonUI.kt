@@ -183,3 +183,76 @@ fun TopRow(
     }
 }
 
+@Composable
+fun PaymentMethod(){
+    Image(
+        painterResource(R.drawable.amex),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.applepay),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.cup),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.diners),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.discover),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.gpay),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.jcb),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.mastercard),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Image(
+        painterResource(R.drawable.visa),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp)
+        //tint = Color.DarkGray
+    )
+    Icon(
+        painterResource(R.drawable.baseline_account_balance_24),
+        contentDescription = "Search",
+        modifier = Modifier
+            .size(38.dp),
+        tint = Color.Blue
+    )
+}

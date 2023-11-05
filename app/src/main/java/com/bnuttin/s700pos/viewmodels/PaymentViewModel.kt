@@ -11,6 +11,12 @@ import kotlinx.serialization.Serializable
 import java.io.IOException
 
 @Serializable
+data class PaymentMethod(
+    val type: String? = null,
+    val brand: String? = null,
+    val last4: String? = null
+)
+@Serializable
 data class PaymentIntentMetadata(
     val bopis: String? = null,
     val order: String? = null,

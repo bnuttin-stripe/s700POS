@@ -147,26 +147,46 @@ class MainActivity : ComponentActivity() {
         Terminal.getInstance()
     }
 
+//    fun connectReader(reader: Reader) {
+//        val config = ConnectionConfiguration.LocalMobileConnectionConfiguration("tml_FUDFHw8z8uD3WL")
+//        Terminal.getInstance().connectLocalMobileReader(reader, config, object : ReaderCallback {
+//            override fun onSuccess(r: Reader) {
+//                Log.d("BENJI", "Connected to reader " + r.id)
+//            }
+//
+//            override fun onFailure(e: TerminalException) {
+//                e.printStackTrace()
+//            }
+//        })
+//    }
     fun connectReader(reader: Reader) {
-        val config = ConnectionConfiguration.LocalMobileConnectionConfiguration("{{LOCATION_ID}}")
-        Terminal.getInstance().connectLocalMobileReader(reader, config, object : ReaderCallback {
-            override fun onSuccess(r: Reader) {
-                Log.d("BENJI", "Connected to reader " + r.id)
-            }
+        Terminal.getInstance().connectHandoffReader(
+            reader = reader,
+            config = ConnectionConfiguration.HandoffConnectionConfiguration(),
+            listener = null,
+            connectionCallback = object: ReaderCallback {
+                override fun onSuccess(reader: Reader) {
+                    // ready for payment collection
+                    Log.d("BENJI", "Connected to handoff reader")
+                }
 
-            override fun onFailure(e: TerminalException) {
-                e.printStackTrace()
+                override fun onFailure(e: TerminalException) {
+                }
             }
-        })
+        )
     }
 
+
     fun onDiscoverReaders() {
+        Log.d("BENJI", "Discovering reader")
         var discoveryCancelable: Cancelable? = null
         val isApplicationDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
 
-        val config = DiscoveryConfiguration.LocalMobileDiscoveryConfiguration(
-            isSimulated = isApplicationDebuggable,
-        )
+//        val config = DiscoveryConfiguration.LocalMobileDiscoveryConfiguration(
+//            isSimulated = isApplicationDebuggable,
+//        )
+        val config = DiscoveryConfiguration.HandoffDiscoveryConfiguration()
+
         // Save this cancelable to an instance variable
         discoveryCancelable = Terminal.getInstance().discoverReaders(config,
             object : DiscoveryListener {

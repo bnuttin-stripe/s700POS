@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.components.PaymentMethod
 import com.bnuttin.s700pos.components.PrettyButton
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
@@ -56,8 +60,10 @@ private fun function(
     paymentId: String,
 ): @Composable() (ColumnScope.() -> Unit) =
     {
+        val payment = paymentViewModel.paymentIntent
+
         TopRow(
-            title = "Order Details",
+            title = "Payments Details",
             onClick = {
                 if ((customerViewModel.customer.id ?: "") === "") {
                     navController.navigate("payments")
@@ -70,6 +76,27 @@ private fun function(
             label = "Back",
             modifier = Modifier
         )
+        Column(){
+            Text(
+                ("ID: " + payment.id) ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                "Status: " + payment.status ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                "Created: " + payment.created ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+        }
         Row {
             if (paymentViewModel.paymentIntent.metadata?.bopis == "pending") {
                 PrettyButton(
@@ -88,5 +115,6 @@ private fun function(
                 modifier = Modifier
             )
         }
+        PaymentMethod()
     }
 
