@@ -41,7 +41,7 @@ class CheckoutViewModel : ViewModel() {
     fun createPaymentIntentNew(amount: Long) {
         Log.d("BENJI", "Creating payment intent")
         val params = PaymentIntentParameters.Builder()
-            .setAmount(amount)
+            .setAmount(amount/100)
             .setCurrency("usd")
             .setCaptureMethod(CaptureMethod.Automatic)
             .build()
@@ -65,7 +65,8 @@ class CheckoutViewModel : ViewModel() {
             object : PaymentIntentCallback {
                 override fun onSuccess(paymentIntent: PaymentIntent) {
                     val pm = paymentIntent.paymentMethod
-                    Log.d("BENJI", "Payment method collected: $pm")
+                    val card = pm?.cardPresentDetails ?: pm?.interacPresentDetails
+                    Log.d("BENJI", "Payment method collected: $card")
                     confirmPaymentIntent(paymentIntent)
                 }
 
