@@ -29,7 +29,7 @@ fun PaymentDetails(
     paymentId: String,
 ) {
     LaunchedEffect(key1 = true) {
-        paymentViewModel.getPaymentIntent(paymentId)
+        paymentViewModel.getPayment(paymentId)
     }
 
 //    val payments = paymentViewModel.customerPayments
@@ -60,7 +60,7 @@ private fun function(
     paymentId: String,
 ): @Composable() (ColumnScope.() -> Unit) =
     {
-        val payment = paymentViewModel.paymentIntent
+        val payment = paymentViewModel.payment
 
         TopRow(
             title = "Payments Details",
@@ -98,7 +98,7 @@ private fun function(
 
         }
         Row {
-            if (paymentViewModel.paymentIntent.metadata?.bopis == "pending") {
+            if (paymentViewModel.payment.metadata?.bopis == "pending") {
                 PrettyButton(
                     onClick = { paymentViewModel.bopisPickedUp(paymentId) },
                     status = paymentViewModel.status,

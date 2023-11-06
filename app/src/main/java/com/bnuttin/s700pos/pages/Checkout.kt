@@ -44,10 +44,12 @@ fun Checkout(
         )
 
         Cart(cartViewModel)
+
         Button(
             onClick = {
                 val amount = cartViewModel.total * 100
                 checkoutViewModel.createPaymentIntent(amount = amount.toInt())
+                checkoutViewModel.createPaymentIntentNew(amount = amount.toLong())
             },
             shape = RoundedCornerShape(size = 6.dp),
             enabled = cartViewModel.total > 0,
@@ -63,6 +65,7 @@ fun Checkout(
                 Text("Create PI")
             }
         }
-        Text("Payment intent client secret: " + checkoutViewModel.paymentIntent.client_secret)
+        //Text("Payment intent client secret: " + checkoutViewModel.currentPaymentIntent.value?.clientSecret ?: "")
+        Text("Payment intent client secret: " + checkoutViewModel.currentPayment?.client_secret ?: "")
     }
 }

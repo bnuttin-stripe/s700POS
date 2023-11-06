@@ -19,13 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.bnuttin.s700pos.viewmodels.PaymentIntent
-import com.bnuttin.s700pos.viewmodels.PaymentIntentMetadata
+import com.bnuttin.s700pos.viewmodels.Payment
+import com.bnuttin.s700pos.viewmodels.PaymentMetadata
 import com.example.s700pos.R
 
 @Composable
 fun PaymentCard(
-    payment: PaymentIntent,
+    payment: Payment,
     navController: NavController,
 ) {
     Column(
@@ -87,13 +87,13 @@ fun PaymentCard(
 @Composable
 fun PaymentCardPreview() {
     PaymentCard(
-        payment = PaymentIntent(
+        payment = Payment(
             id = "pi_3O83bmFyN0fE9mUH175qt0e4",
             amount = 2600,
             amount_received = 2600,
             description = "Hello world",
             status = "Successful",
-            metadata = PaymentIntentMetadata(
+            metadata = PaymentMetadata(
                 bopis = "Pending",
                 order = "PRESS-123",
                 channel = "offline",

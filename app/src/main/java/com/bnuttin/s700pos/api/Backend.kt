@@ -3,7 +3,7 @@ package com.bnuttin.s700pos.api
 import android.app.Application
 import android.content.Context
 import com.bnuttin.s700pos.viewmodels.Customer
-import com.bnuttin.s700pos.viewmodels.PaymentIntent
+import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.Product
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -89,19 +89,19 @@ interface CustomerApi {
 
 interface PaymentApi {
     @GET("payments/{search}")
-    suspend fun searchPayments(@Path("search") search: String): List<PaymentIntent>
+    suspend fun searchPayments(@Path("search") search: String): List<Payment>
 
     @GET("payment_intents/{customerId}")
-    suspend fun getPaymentIntents(@Path("customerId") id: String) : List<PaymentIntent>
+    suspend fun getCustomerPayments(@Path("customerId") id: String) : List<Payment>
 
     @GET("payment_intent/{id}")
-    suspend fun getPaymentIntent(@Path("id") id: String) : PaymentIntent
+    suspend fun getPayment(@Path("id") id: String) : Payment
 
     @POST("payment-intent")
-    suspend fun createPaymentIntent(@Body paymentIntent: PaymentIntent) : PaymentIntent
+    suspend fun createPaymentIntent(@Body payment: Payment) : Payment
 
     @POST("bopis-picked-up")
-    suspend fun bopisPickedUp(@Body paymentIntent: PaymentIntent) : PaymentIntent
+    suspend fun bopisPickedUp(@Body id: String) : Payment
 }
 
 interface TerminalApi {

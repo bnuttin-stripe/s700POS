@@ -17,7 +17,7 @@ data class PaymentMethod(
     val last4: String? = null
 )
 @Serializable
-data class PaymentIntentMetadata(
+data class PaymentMetadata(
     val bopis: String? = null,
     val order: String? = null,
     val cart: String? = null,
@@ -26,22 +26,20 @@ data class PaymentIntentMetadata(
 )
 
 @Serializable
-data class PaymentIntent(
+data class Payment(
     val id: String? = null,
     val amount: Int? = null,
     val amount_received: Int? = null,
     val description: String? = null,
     val status: String? = null,
     val client_secret: String? = null,
-    val metadata: PaymentIntentMetadata? = null,
+    val metadata: PaymentMetadata? = null,
     var created: Long? = null
 )
-
 class PaymentViewModel: ViewModel() {
     var status by mutableStateOf("")
-    var paymentIntent: PaymentIntent by mutableStateOf(PaymentIntent()) // RENAME TO newPaymentIntent?
-    var customerPayments: List<PaymentIntent> by mutableStateOf(listOf())
-    // TODO rename variables
+    var payment: Payment by mutableStateOf(Payment())
+    var customerPayments: List<Payment> by mutableStateOf(listOf())
 
     init {
         searchPayments("")
@@ -63,12 +61,12 @@ class PaymentViewModel: ViewModel() {
         }
     }
 
-    fun getCustomerPayments(customerId: String){
+    fun getCustomerPayments(id: String){
         status = "loading"
 
         viewModelScope.launch{
             try {
-                customerPayments = POSApi.payment.getPaymentIntents(customerId)
+                customerPayments = POSApi.payment.getCustomerPayments(id)
                 status = "done"
             } catch (e: IOException) {
                 status = "error"
@@ -76,40 +74,40 @@ class PaymentViewModel: ViewModel() {
         }
     }
 
-    fun getPaymentIntent(intentId: String) : PaymentIntent{
+    fun getPayment(id: String) : Payment{
         status = "loading"
 
         viewModelScope.launch{
             try {
-                paymentIntent = POSApi.payment.getPaymentIntent(intentId)
+                payment = POSApi.payment.getPayment(id)
                 status = "done"
             } catch (e: IOException) {
                 status = "error"
             }
         }
 
-        return paymentIntent
+        return payment
     }
 
-    fun createPaymentIntent(amount: Int){
+//    fun createPaymentIntent(amount: Int){
+//        status = "loading"
+//        paymentIntent = PaymentIntent(amount = amount)
+//        viewModelScope.launch{
+//            try {
+//                paymentIntent = POSApi.payment.createPaymentIntent(amount = amount)
+//                status = "done"
+//            } catch (e: IOException) {
+//                status = "error"
+//            }
+//        }
+//    }
+
+    fun bopisPickedUp(id: String) : Payment{
         status = "loading"
-        paymentIntent = PaymentIntent(amount = amount)
+
         viewModelScope.launch{
             try {
-                paymentIntent = POSApi.payment.createPaymentIntent(PaymentIntent(amount = amount))
-                status = "done"
-            } catch (e: IOException) {
-                status = "error"
-            }
-        }
-    }
-
-    fun bopisPickedUp(intentId: String) : PaymentIntent{
-        status = "loading"
-
-        viewModelScope.launch{
-            try {
-                paymentIntent = POSApi.payment.bopisPickedUp(paymentIntent)
+                payment = POSApi.payment.bopisPickedUp(id)
                 status = "done"
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -117,6 +115,6 @@ class PaymentViewModel: ViewModel() {
             }
         }
 
-        return paymentIntent
+        return payment
     }
 }
