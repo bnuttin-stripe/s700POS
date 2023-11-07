@@ -86,24 +86,11 @@ class MainActivity : ComponentActivity() {
         else onPermissionsRejected(rejectedPermissions)
     }
 
-    /**
-     * Invoked when the user rejects any of the required permissions prompts.
-     */
     private fun onPermissionsRejected(rejectedPermissions: List<String>) {
-        //Timber.w("Permissions Rejected: ${rejectedPermissions.joinToString()}")
         Log.d("BENJI", "Permissions rejected")
     }
 
-    /**
-     * Invoked when the user accepts all of the required permissions prompts.
-     */
     private fun onPermissionsGranted() {
-//        navController.navigate(
-//            TestJigScreen.SelectMerchant,
-//            navOptions {
-//                popUpTo(TestJigScreen.Permissions.name) { inclusive = true }
-//            }
-//        )
         Log.d("BENJI", "Permissions granted")
     }
 
@@ -148,18 +135,6 @@ class MainActivity : ComponentActivity() {
         Terminal.getInstance()
     }
 
-//    fun connectReader(reader: Reader) {
-//        val config = ConnectionConfiguration.LocalMobileConnectionConfiguration("tml_FUDFHw8z8uD3WL")
-//        Terminal.getInstance().connectLocalMobileReader(reader, config, object : ReaderCallback {
-//            override fun onSuccess(r: Reader) {
-//                Log.d("BENJI", "Connected to reader " + r.id)
-//            }
-//
-//            override fun onFailure(e: TerminalException) {
-//                e.printStackTrace()
-//            }
-//        })
-//    }
     fun connectReader(reader: Reader) {
         Terminal.getInstance().connectHandoffReader(
             reader = reader,
@@ -183,12 +158,8 @@ class MainActivity : ComponentActivity() {
         var discoveryCancelable: Cancelable? = null
         val isApplicationDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
 
-//        val config = DiscoveryConfiguration.LocalMobileDiscoveryConfiguration(
-//            isSimulated = isApplicationDebuggable,
-//        )
         val config = DiscoveryConfiguration.HandoffDiscoveryConfiguration()
 
-        // Save this cancelable to an instance variable
         discoveryCancelable = Terminal.getInstance().discoverReaders(config,
             object : DiscoveryListener {
                 override fun onUpdateDiscoveredReaders(readers: List<Reader>) {
@@ -306,7 +277,7 @@ fun mainContent() {
                     Shop(productViewModel, cartViewModel)
                 }
                 composable("checkout") {
-                    Checkout(cartViewModel, checkoutViewModel)
+                    Checkout(cartViewModel, checkoutViewModel, navController)
                 }
 
                 // CUSTOMER MANAGEMENT

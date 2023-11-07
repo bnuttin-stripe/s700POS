@@ -79,7 +79,7 @@ class CheckoutViewModel : ViewModel() {
     fun confirmPaymentIntent(paymentIntent: PaymentIntent) {
         Terminal.getInstance().confirmPaymentIntent(paymentIntent, object : PaymentIntentCallback {
             override fun onSuccess(paymentIntent: PaymentIntent) {
-                // Placeholder for notifying your backend to capture paymentIntent.id
+
             }
 
             override fun onFailure(exception: TerminalException) {

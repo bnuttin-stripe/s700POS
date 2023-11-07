@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.api.PrefRepository
 import com.bnuttin.s700pos.components.Cart
 import com.bnuttin.s700pos.components.TopRow
@@ -26,6 +27,7 @@ import com.example.s700pos.R
 fun Checkout(
     cartViewModel: CartViewModel,
     checkoutViewModel: CheckoutViewModel,
+    navController: NavHostController
 ) {
     val prefRepository = PrefRepository(LocalContext.current)
 
@@ -62,7 +64,7 @@ fun Checkout(
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
             } else {
-                Text("Create PI")
+                Text("Pay")
             }
         }
         //Text("Payment intent client secret: " + checkoutViewModel.currentPaymentIntent.value?.clientSecret ?: "")
