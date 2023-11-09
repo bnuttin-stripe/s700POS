@@ -1,11 +1,14 @@
 package com.bnuttin.s700pos.api
 
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.ConnectionToken
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.Product
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
+import okhttp3.Credentials
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,55 +19,38 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "https://complete-transparent-oval.glitch.me"
-private const val DIRECT_URL = "https://api.stripe.com/v1"
+class BasicAuthInterceptor(username: String, password: String): Interceptor {
+    private var credentials: String = Credentials.basic(username, password)
 
-//class BasicAuthInterceptor(username: String, password: String): Interceptor {
-//    private var credentials: String = Credentials.basic(username, password)
-//
-//    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-//        var request = chain.request()
-//        request = request.newBuilder().header("Authorization", credentials).build()
-//        return chain.proceed(request)
-//    }
-//}
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        var request = chain.request()
+        request = request.newBuilder().header("Authorization", credentials).build()
+        return chain.proceed(request)
+    }
+}
 
-//class MyApp : Application() {
-//
-//    override fun onCreate() {
-//        instance = this
-//        super.onCreate()
-//    }
-//
-//    companion object {
-//        var instance: MyApp? = null
-//            private set
-//
-//        val context: Context?
-//            get() = instance
-//
-//
-//    }
-//
-//}
+const val DEFAULT_URL = "https://complete-transparent-oval.glitch.me"
 
-//val myApp = MyApp()
-//val BASE_URL_NEW = myApp.prefRepository.getBackendUrl()
+class URLInterceptor(): Interceptor {
+    private var serverUrl = DEFAULT_URL
 
-//    @SuppressLint("StaticFieldLeak")
-//    val settingsViewModel = SettingsViewModel(getApplication<Application>().applicationContext)
-//    val BASE_URL_NEW = settingsViewModel.getBackendUrl()
-//
+    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+        var request = chain.request()
+        var newUrl = request.url.toString().replace(DEFAULT_URL, AppPreferences.serverUrl ?: DEFAULT_URL)
+        request = request.newBuilder().url(newUrl).build()
+        return chain.proceed(request)
+    }
+}
 
-val interceptor = HttpLoggingInterceptor().apply {
+val loggingInterceptor = HttpLoggingInterceptor().apply {
     this.level = HttpLoggingInterceptor.Level.BODY
 }
 
 val okHttpClient = OkHttpClient.Builder()
     .readTimeout(20, TimeUnit.SECONDS)
     .connectTimeout(20, TimeUnit.SECONDS)
-    //.addInterceptor(BasicAuthInterceptor(SK,""))
-    .addInterceptor(interceptor)
+    .addInterceptor(URLInterceptor())
+    .addInterceptor(loggingInterceptor)
     .build()
 
 private var json = Json {
@@ -75,7 +61,7 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(
         json.asConverterFactory("application/json".toMediaType())
     )
-    .baseUrl(BASE_URL)
+    .baseUrl(DEFAULT_URL)
     .client(okHttpClient)
     .build()
 

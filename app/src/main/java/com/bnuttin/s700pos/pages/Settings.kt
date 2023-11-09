@@ -35,10 +35,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.PrefRepository
 import com.bnuttin.s700pos.viewmodels.SettingsViewModel
 import com.example.s700pos.R
@@ -54,11 +56,13 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
 //    var currency by remember { mutableStateOf(prefRepository.getCurrency()) }
 //    var backendUrl by remember { mutableStateOf(prefRepository.getBackendUrl()) }
 
-
+    var brandName by remember { mutableStateOf(AppPreferences.brandName) }
+    var storeNumber by remember { mutableStateOf(AppPreferences.storeNumber) }
+    var backendUrl by remember { mutableStateOf(AppPreferences.serverUrl) }
 
     //var sellerName by remember { mutableStateOf(settingsViewModel.getSellerName()) }
     var currency by remember { mutableStateOf(settingsViewModel.getCurrency()) }
-    var backendUrl by remember { mutableStateOf(settingsViewModel.getBackendUrl()) }
+//    var backendUrl by remember { mutableStateOf(settingsViewModel.getBackendUrl()) }
     var formValid: Boolean by remember { mutableStateOf(false) }
 
     val options = listOf("USD", "EUR", "GBP")
@@ -157,7 +161,7 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
         }
 
         OutlinedTextField(
-            value = backendUrl,
+            value = backendUrl ?: "",
             onValueChange = {
                 backendUrl = it;
                 checkForm()
@@ -170,6 +174,37 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         )
+
+        OutlinedTextField(
+            value = brandName ?: "",
+            onValueChange = {
+                brandName = it;
+                checkForm()
+            },
+            label = { Text("Brand Name") },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+
+//        OutlinedTextField(
+//            value = storeNumber.toString(),
+//            onValueChange = {
+//                storeNumber = it;
+//                checkForm()
+//            },
+//            label = { Text("Store Number") },
+//            keyboardOptions = KeyboardOptions(
+//                keyboardType = KeyboardType.Number
+//            ),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 8.dp)
+//        )
+
         Button(
             onClick = {
 //                prefRepository.setSellerName(sellerName)
@@ -177,7 +212,12 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
 //                prefRepository.setBackendUrl(backendUrl)
                 settingsViewModel.updateSellerName(sellerName)
                 settingsViewModel.updateCurrency(currency)
-                settingsViewModel.updateBackendUrl(backendUrl)
+                //settingsViewModel.updateBackendUrl(backendUrl)
+
+                AppPreferences.brandName = brandName
+                AppPreferences.storeNumber = storeNumber
+                AppPreferences.serverUrl = backendUrl
+
                 settingsViewModel.settingsSaved = true
             },
             shape = RoundedCornerShape(size = 6.dp),

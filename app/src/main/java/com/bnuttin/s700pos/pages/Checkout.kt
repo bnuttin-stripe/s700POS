@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.components.Cart
 import com.bnuttin.s700pos.components.TopRow
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.PrefRepository
@@ -37,7 +38,7 @@ fun Checkout(
             .verticalScroll(rememberScrollState())
     ) {
         TopRow(
-            title = "Checkout ${prefRepository.getSellerName()}",
+            title = "Checkout ${AppPreferences.brandName}",
             onClick = { cartViewModel.emptyCart() },
             status = "done",
             icon = R.drawable.baseline_remove_shopping_cart_24,
