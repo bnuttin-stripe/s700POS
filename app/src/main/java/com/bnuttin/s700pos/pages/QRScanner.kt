@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.api.PrefRepository
+import com.bnuttin.s700pos.viewmodels.PrefRepository
 import com.bnuttin.s700pos.api.QrCodeAnalyzer
-import com.bnuttin.s700pos.api.SettingsViewModel
 import com.bnuttin.s700pos.components.TopRow
+import com.bnuttin.s700pos.viewmodels.SettingsViewModel
 import com.example.s700pos.R
 import org.json.JSONObject
 

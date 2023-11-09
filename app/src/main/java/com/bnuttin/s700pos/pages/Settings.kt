@@ -4,6 +4,7 @@ package com.bnuttin.s700pos.pages
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.api.SettingsViewModel
+import com.bnuttin.s700pos.viewmodels.PrefRepository
+import com.bnuttin.s700pos.viewmodels.SettingsViewModel
 import com.example.s700pos.R
 
 //@OptIn(ExperimentalMaterial3Api::class)
@@ -46,11 +48,15 @@ import com.example.s700pos.R
 @Composable
 fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostController) {
     val context = LocalContext.current
+    val prefRepository = PrefRepository(context)
 
-//    var sellerName by remember { mutableStateOf(prefRepository.getSellerName()) }
+    var sellerName by remember { mutableStateOf(prefRepository.getSellerName()) }
 //    var currency by remember { mutableStateOf(prefRepository.getCurrency()) }
 //    var backendUrl by remember { mutableStateOf(prefRepository.getBackendUrl()) }
-    var sellerName by remember { mutableStateOf(settingsViewModel.getSellerName()) }
+
+
+
+    //var sellerName by remember { mutableStateOf(settingsViewModel.getSellerName()) }
     var currency by remember { mutableStateOf(settingsViewModel.getCurrency()) }
     var backendUrl by remember { mutableStateOf(settingsViewModel.getBackendUrl()) }
     var formValid: Boolean by remember { mutableStateOf(false) }
@@ -60,7 +66,9 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
     var selectedOptionText by remember { mutableStateOf(options[0]) }
 
     fun checkForm() {
+        settingsViewModel.settingsSaved = false
         formValid = sellerName.isNotEmpty() && Patterns.WEB_URL.matcher(backendUrl).matches();
+        Log.d("BENJI", formValid.toString())
     }
 
     Column(
@@ -74,7 +82,7 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                 .padding(bottom = 10.dp)
         ) {
             Text(
-                "Settings",
+                "Settings $sellerName",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -88,7 +96,6 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                     tint = Color.DarkGray
                 )
             }
-            Text(currency)
             IconButton(onClick = {
                 context.startActivity(
                     Intent(Intent.ACTION_VIEW)
@@ -109,7 +116,6 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                 checkForm()
             },
             label = { Text("Seller Name") },
-            //colors = TextFieldDefaults.colors(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -129,8 +135,6 @@ fun Settings(settingsViewModel: SettingsViewModel, navController: NavHostControl
                 onValueChange = {  },
                 label = { Text("Currency") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                //colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                //colors = TextFieldDefaults.colors()
             )
             ExposedDropdownMenu(
                 expanded = expanded,

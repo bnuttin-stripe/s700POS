@@ -1,4 +1,4 @@
-package com.bnuttin.s700pos.api
+package com.bnuttin.s700pos.viewmodels
 
 import android.content.Context
 import android.content.SharedPreferences

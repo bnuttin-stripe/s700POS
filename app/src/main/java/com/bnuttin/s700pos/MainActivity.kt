@@ -32,9 +32,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.bnuttin.s700pos.api.SettingsViewModel
-import com.bnuttin.s700pos.api.TokenProvider
-import com.bnuttin.s700pos.api.discoveryCancelable
 import com.bnuttin.s700pos.pages.Checkout
 import com.bnuttin.s700pos.pages.CustomerDetails
 import com.bnuttin.s700pos.pages.CustomerList
@@ -49,6 +46,9 @@ import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
+import com.bnuttin.s700pos.viewmodels.SettingsViewModel
+import com.bnuttin.s700pos.viewmodels.TokenProvider
+import com.bnuttin.s700pos.viewmodels.discoveryCancelable
 import com.example.s700pos.R
 import com.stripe.stripeterminal.Terminal
 import com.stripe.stripeterminal.external.callable.Callback

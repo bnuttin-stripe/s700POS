@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.api.PrefRepository
 import com.bnuttin.s700pos.components.Cart
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
+import com.bnuttin.s700pos.viewmodels.PrefRepository
 import com.example.s700pos.R
 
 @Composable
@@ -37,7 +37,7 @@ fun Checkout(
             .verticalScroll(rememberScrollState())
     ) {
         TopRow(
-            title = "Checkout",
+            title = "Checkout ${prefRepository.getSellerName()}",
             onClick = { cartViewModel.emptyCart() },
             status = "done",
             icon = R.drawable.baseline_remove_shopping_cart_24,

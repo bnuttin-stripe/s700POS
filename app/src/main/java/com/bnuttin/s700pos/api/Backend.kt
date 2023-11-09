@@ -1,7 +1,6 @@
 package com.bnuttin.s700pos.api
 
-import android.app.Application
-import android.content.Context
+import com.bnuttin.s700pos.viewmodels.ConnectionToken
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.Product
@@ -17,11 +16,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-
 private const val BASE_URL = "https://complete-transparent-oval.glitch.me"
 private const val DIRECT_URL = "https://api.stripe.com/v1"
-
-//private const val SK = "sk_test_51KLxtYHKlXhH6PBwy2ByjIVApqXXGuWYZhkZlSTPSBcq34bmNKsFn0kcuTX7qEmq8tt8tQfY7ujBsUAW09xtU6kC00RNmH5qeg"
 
 //class BasicAuthInterceptor(username: String, password: String): Interceptor {
 //    private var credentials: String = Credentials.basic(username, password)
@@ -33,25 +29,37 @@ private const val DIRECT_URL = "https://api.stripe.com/v1"
 //    }
 //}
 
-class MyApp : Application() {
+//class MyApp : Application() {
+//
+//    override fun onCreate() {
+//        instance = this
+//        super.onCreate()
+//    }
+//
+//    companion object {
+//        var instance: MyApp? = null
+//            private set
+//
+//        val context: Context?
+//            get() = instance
+//
+//
+//    }
+//
+//}
 
-    override fun onCreate() {
-        instance = this
-        super.onCreate()
-    }
+//val myApp = MyApp()
+//val BASE_URL_NEW = myApp.prefRepository.getBackendUrl()
 
-    companion object {
-        var instance: MyApp? = null
-            private set
-
-        val context: Context?
-            get() = instance
-    }
-}
+//    @SuppressLint("StaticFieldLeak")
+//    val settingsViewModel = SettingsViewModel(getApplication<Application>().applicationContext)
+//    val BASE_URL_NEW = settingsViewModel.getBackendUrl()
+//
 
 val interceptor = HttpLoggingInterceptor().apply {
     this.level = HttpLoggingInterceptor.Level.BODY
 }
+
 val okHttpClient = OkHttpClient.Builder()
     .readTimeout(20, TimeUnit.SECONDS)
     .connectTimeout(20, TimeUnit.SECONDS)
