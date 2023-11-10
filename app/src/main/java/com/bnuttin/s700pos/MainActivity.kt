@@ -46,7 +46,6 @@ import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
-import com.bnuttin.s700pos.viewmodels.SettingsViewModel
 import com.bnuttin.s700pos.viewmodels.TokenProvider
 import com.bnuttin.s700pos.viewmodels.discoveryCancelable
 import com.example.s700pos.R
@@ -87,6 +86,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun onPermissionsRejected(rejectedPermissions: List<String>) {
+        // TODO redirect to an error page
         Log.d("BENJI", "Permissions rejected")
     }
 
@@ -200,7 +200,6 @@ fun mainContent() {
     val productViewModel: ProductViewModel = viewModel()
     val customerViewModel: CustomerViewModel = viewModel()
     val checkoutViewModel: CheckoutViewModel = viewModel()
-    val settingsViewModel: SettingsViewModel = viewModel()
     val paymentViewModel: PaymentViewModel = viewModel()
 
     S700POSTheme {
@@ -317,10 +316,10 @@ fun mainContent() {
 
                 // SETTINGS
                 composable("settings") {
-                    Settings(settingsViewModel, navController)
+                    Settings(cartViewModel, customerViewModel, paymentViewModel, productViewModel, navController)
                 }
                 composable("qrscanner") {
-                    QRSCanner(settingsViewModel, navController)
+                    QRSCanner(cartViewModel, customerViewModel, paymentViewModel, productViewModel, navController)
                 }
 
             }

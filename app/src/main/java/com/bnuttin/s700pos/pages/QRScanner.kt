@@ -25,24 +25,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.viewmodels.PrefRepository
 import com.bnuttin.s700pos.api.QrCodeAnalyzer
 import com.bnuttin.s700pos.components.TopRow
-import com.bnuttin.s700pos.viewmodels.SettingsViewModel
+import com.bnuttin.s700pos.viewmodels.AppPreferences
+import com.bnuttin.s700pos.viewmodels.CartViewModel
+import com.bnuttin.s700pos.viewmodels.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.PaymentViewModel
+import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
 import org.json.JSONObject
 
 @Composable
-fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostController) {
-    // Sample QR code: {"seller":"Benjamin Nuttin","backend":"http://hello.world:3000"}
+fun QRSCanner(
+    cartViewModel: CartViewModel,
+    customerViewModel: CustomerViewModel,
+    paymentViewModel: PaymentViewModel,
+    productViewModel: ProductViewModel,
+    navController: NavHostController
+) {
+    // Sample QR code: {"storeName":"Chicago - Lincoln Park", "sellerName":"Benjamin Nuttin", "brandName": "Stripe 360", "backendUrl": "https://complete-transparent-oval.glitch.me", "currency": "USD"}
 
-    var context = LocalContext.current
-    val prefRepository = PrefRepository(context)
+    val context = LocalContext.current
+    var payload by remember { mutableStateOf("") }
 
-    var code by remember { mutableStateOf("") }
+    fun resetReload() {
+        cartViewModel.emptyCart()
+        customerViewModel.searchCustomers("")
+        paymentViewModel.searchPayments("")
+        productViewModel.getProducts()
+    }
+
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }
+
     var hasCamPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -51,12 +67,14 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
             ) == PackageManager.PERMISSION_GRANTED
         )
     }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { granted ->
             hasCamPermission = granted
         }
     )
+
     val lifeCycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(key1 = true) {
@@ -92,11 +110,15 @@ fun QRSCanner(settingsViewModel: SettingsViewModel, navController: NavHostContro
                     imageAnalysis.setAnalyzer(
                         ContextCompat.getMainExecutor(context),
                         QrCodeAnalyzer { result ->
-                            code = result
+                            payload = result
                             // TODO: Add error handling
-                            val json = JSONObject(code)
-                            prefRepository.setSellerName(json.getString("seller"))
-                            prefRepository.setBackendUrl(json.getString("backend"))
+                            val json = JSONObject(payload)
+                            AppPreferences.storeName = json.getString("storeName")
+                            AppPreferences.sellerName = json.getString("sellerName")
+                            AppPreferences.brandName = json.getString("brandName")
+                            AppPreferences.backendUrl = json.getString("backendUrl")
+                            AppPreferences.currency = json.getString("currency")
+                            resetReload()
                             navController.navigate("settings")
                         }
                     )

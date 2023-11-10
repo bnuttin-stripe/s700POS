@@ -1,10 +1,12 @@
 package com.bnuttin.s700pos.api
 
+import com.bnuttin.s700pos.pages.ValidationResult
 import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.ConnectionToken
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.Product
+//import com.bnuttin.s700pos.viewmodels.ValidationResult
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.Credentials
@@ -19,6 +21,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
+const val DEFAULT_URL = "https://complete-transparent-oval.glitch.me"
+
 class BasicAuthInterceptor(username: String, password: String): Interceptor {
     private var credentials: String = Credentials.basic(username, password)
 
@@ -29,19 +33,19 @@ class BasicAuthInterceptor(username: String, password: String): Interceptor {
     }
 }
 
-const val DEFAULT_URL = "https://complete-transparent-oval.glitch.me"
-
+// Update the URL at run time to the one set in the Settings
 class URLInterceptor(): Interceptor {
     private var serverUrl = DEFAULT_URL
 
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         var request = chain.request()
-        var newUrl = request.url.toString().replace(DEFAULT_URL, AppPreferences.serverUrl ?: DEFAULT_URL)
+        val newUrl = request.url.toString().replace(DEFAULT_URL, AppPreferences.backendUrl ?: DEFAULT_URL)
         request = request.newBuilder().url(newUrl).build()
         return chain.proceed(request)
     }
 }
 
+// Set logging on the requests
 val loggingInterceptor = HttpLoggingInterceptor().apply {
     this.level = HttpLoggingInterceptor.Level.BODY
 }
@@ -64,6 +68,11 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(DEFAULT_URL)
     .client(okHttpClient)
     .build()
+
+interface SettingsApi {
+    @GET("validate")
+    suspend fun validateBackend(): ValidationResult
+}
 
 interface ProductApi {
     @GET("products/usd")

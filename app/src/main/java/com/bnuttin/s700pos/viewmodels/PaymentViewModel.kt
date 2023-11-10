@@ -89,19 +89,6 @@ class PaymentViewModel: ViewModel() {
         return payment
     }
 
-//    fun createPaymentIntent(amount: Int){
-//        status = "loading"
-//        paymentIntent = PaymentIntent(amount = amount)
-//        viewModelScope.launch{
-//            try {
-//                paymentIntent = POSApi.payment.createPaymentIntent(amount = amount)
-//                status = "done"
-//            } catch (e: IOException) {
-//                status = "error"
-//            }
-//        }
-//    }
-
     fun bopisPickedUp(id: String) : Payment{
         status = "loading"
 

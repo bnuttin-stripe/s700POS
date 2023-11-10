@@ -12,20 +12,28 @@ object AppPreferences {
         sharedPreferences = context.getSharedPreferences("S700POS.sharedprefs", MODE_PRIVATE)
     }
 
+    var storeName : String?
+        get() = Key.STORENAME.getString()
+        set(value) = Key.STORENAME.setString(value)
+
+    var sellerName : String?
+        get() = Key.SELLERNAME.getString()
+        set(value) = Key.SELLERNAME.setString(value)
+
     var brandName: String?
         get() = Key.BRANDNAME.getString()
         set(value) = Key.BRANDNAME.setString(value)
 
-    var storeNumber: Int?
-        get() = Key.STORENUMBER.getInt()
-        set(value) = Key.STORENUMBER.setInt(value)
+    var backendUrl: String?
+        get() = Key.BACKENDURL.getString()
+        set(value) = Key.BACKENDURL.setString(value)
 
-    var serverUrl: String?
-        get() = Key.SERVERURL.getString()
-        set(value) = Key.SERVERURL.setString(value)
+    var currency: String?
+        get() = Key.CURRENCY.getString()
+        set(value) = Key.CURRENCY.setString(value)
 
     private enum class Key {
-        BRANDNAME, STORENUMBER, SERVERURL;
+        STORENAME, SELLERNAME, BRANDNAME, BACKENDURL, CURRENCY;
 
         fun getBoolean(): Boolean? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getBoolean(name, false) else null
         fun getFloat(): Float? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getFloat(name, 0f) else null
