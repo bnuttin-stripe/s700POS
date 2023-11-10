@@ -1,6 +1,7 @@
 package com.bnuttin.s700pos.pages
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.components.FormattedPriceLabel
-import com.bnuttin.s700pos.components.PaymentCard
+import com.bnuttin.s700pos.components.PaymentLine
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
@@ -35,7 +36,10 @@ fun CustomerDetails(
     navController: NavHostController,
     id: String,
 ) {
-    val payments = paymentViewModel.customerPayments
+    //val payments = paymentViewModel.customerPayments
+    val payments = paymentViewModel.searchPayments
+    val customer = customerViewModel.customer
+
     var selectedTab by remember { mutableStateOf(0) }
 
     LaunchedEffect(key1 = true) {
@@ -58,30 +62,62 @@ fun CustomerDetails(
             label = "Back",
             modifier = Modifier
         )
-        Text(
-            "Name: " + customerViewModel.customer.name ?: "",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            "Email: " + customerViewModel.customer.email ?: "",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            "Lifetime payments: " + customerViewModel.customer.ltv?.let { FormattedPriceLabel(it.toDouble()) },
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            "Lifetime purchases: " + (customerViewModel.customer.payments ?: 0),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        Row(
+            modifier = Modifier.padding(bottom = 12.dp)
+        ){
+            Text(
+                "Name: ",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                customer.name ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+        Row(
+            modifier = Modifier.padding(bottom = 12.dp)
+        ){
+            Text(
+                "Email: ",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                customer.email ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+        Row(
+            modifier = Modifier.padding(bottom = 12.dp)
+        ){
+            Text(
+                "Lifetime Payments: ",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                "" + customer.ltv?.let{ FormattedPriceLabel(it.toDouble()) },
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
+        Row(
+            modifier = Modifier.padding(bottom = 12.dp)
+        ){
+            Text(
+                "Lifetime Purchases: ",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                customer.payments.toString() ?: "",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+        }
 
 //        OutlinedTextField(
 //            value = customerViewModel.customer.name ?: "",
@@ -131,7 +167,7 @@ fun CustomerDetails(
                 } else {
                     payments.forEach() { payment ->
                         if (payment.metadata?.bopis == "pending") {
-                            PaymentCard(
+                            PaymentLine(
                                 payment,
                                 navController
                             )
@@ -147,7 +183,7 @@ fun CustomerDetails(
                 } else {
                     payments.forEach() { payment ->
                         if (payment.metadata?.bopis != "pending") {
-                            PaymentCard(
+                            PaymentLine(
                                 payment,
                                 navController
                             )

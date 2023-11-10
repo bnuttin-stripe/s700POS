@@ -24,7 +24,7 @@ import com.bnuttin.s700pos.viewmodels.PaymentMetadata
 import com.example.s700pos.R
 
 @Composable
-fun PaymentCard(
+fun PaymentLine(
     payment: Payment,
     navController: NavController,
 ) {
@@ -34,7 +34,7 @@ fun PaymentCard(
             headlineContent = {
                 Row() {
                     Text(
-                        text = payment.metadata?.order ?: "",
+                        text = payment.metadata?.orderId ?: "",
                         fontSize = 20.sp,
                         modifier = Modifier.padding(end = 10.dp)
                     )
@@ -85,8 +85,8 @@ fun PaymentCard(
     showBackground = true
 )
 @Composable
-fun PaymentCardPreview() {
-    PaymentCard(
+fun PaymentLinePreview() {
+    PaymentLine(
         payment = Payment(
             id = "pi_3O83bmFyN0fE9mUH175qt0e4",
             amount = 2600,
@@ -95,9 +95,9 @@ fun PaymentCardPreview() {
             status = "Successful",
             metadata = PaymentMetadata(
                 bopis = "Pending",
-                order = "PRESS-123",
+                orderId = "PRESS-123",
                 channel = "offline",
-                cart = "price_1O7PqAFyN0fE9mUHlNJItP0r, price_1O7PpWFyN0fE9mUHjZTlTRmo",
+                items = "price_1O7PqAFyN0fE9mUHlNJItP0r, price_1O7PpWFyN0fE9mUHjZTlTRmo",
                 store = "Chicago Lincoln Park"
             ),
             created = 1698941905

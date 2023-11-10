@@ -4,6 +4,7 @@ package com.bnuttin.s700pos.pages
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Patterns
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,8 +51,10 @@ import com.example.s700pos.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import java.io.IOException
 
+@Serializable
 data class ValidationResult(
     val app: String? = null
 )
@@ -82,8 +86,11 @@ fun Settings(
     var brandName by remember { mutableStateOf(AppPreferences.brandName) }
     var backendUrl by remember { mutableStateOf(AppPreferences.backendUrl) }
     var currency by remember { mutableStateOf(AppPreferences.currency) }
+    var orderIdPrefix by remember { mutableStateOf(AppPreferences.orderIdPrefix)}
 
     var formValid: Boolean by remember { mutableStateOf(false) }
+    //var backendValidationResult: ValidationResult by remember { mutableStateOf(ValidationResult(app = "none")) }
+    //var backendValid: Boolean by remember { mutableStateOf(true) }
     var settingsSaved: Boolean by remember { mutableStateOf(true) }
 
     val currencyOptions = listOf("USD", "EUR", "GBP")
@@ -92,9 +99,8 @@ fun Settings(
 
     fun checkForm() {
         settingsSaved = false
+        formValid = Patterns.WEB_URL.matcher(backendUrl).matches();
         // TODO add validation of backend URL
-        //formValid = sellerName!!.isNotEmpty() && Patterns.WEB_URL.matcher(backendUrl).matches();
-        //Log.d("BENJI", formValid.toString())
         formValid = true
     }
 
@@ -105,12 +111,26 @@ fun Settings(
         productViewModel.getProducts()
     }
 
+//    fun validateEndpoint() {
+//        CoroutineScope(Dispatchers.Default).launch{
+//            try {
+//                backendValidationResult = POSApi.settings.validateBackend()
+//                backendValid = (backendValidationResult.app ?: "") == "OK"
+//                //Log.d("BENJI", backendValidationResult.app ?: "Not Good")
+//            } catch (e: IOException) {
+//                backendValid = false
+//                //Log.d("BENJI", e.toString())
+//            }
+//        }
+//    }
+
     fun saveSettings() {
         AppPreferences.storeName = storeName
         AppPreferences.sellerName = sellerName
         AppPreferences.brandName = brandName
         AppPreferences.backendUrl = backendUrl
         AppPreferences.currency = currency
+        AppPreferences.orderIdPrefix = orderIdPrefix
         settingsSaved = true
         resetReload()
     }
@@ -165,9 +185,14 @@ fun Settings(
                 checkForm()
             },
             label = { Text("Store Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
+
         )
         OutlinedTextField(
             value = sellerName ?: "",
@@ -176,6 +201,10 @@ fun Settings(
                 checkForm()
             },
             label = { Text("Seller Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -187,6 +216,10 @@ fun Settings(
                 checkForm()
             },
             label = { Text("Brand Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -198,6 +231,7 @@ fun Settings(
                 checkForm()
             },
             label = { Text("Backend URL") },
+            singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Uri
             ),
@@ -240,6 +274,21 @@ fun Settings(
                 }
             }
         }
+        OutlinedTextField(
+            value = orderIdPrefix ?: "",
+            onValueChange = {
+                orderIdPrefix = it;
+                checkForm()
+            },
+            label = { Text("Order ID Prefix") },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Characters
+            ),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
         Button(
             onClick = {
                 saveSettings()
@@ -250,5 +299,14 @@ fun Settings(
         ) {
             Text("Save")
         }
+//        Button(
+//            onClick = {
+//                validateEndpoint()
+//            },
+//            shape = RoundedCornerShape(size = 6.dp),
+//            modifier = Modifier.padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp),
+//        ) {
+//            Text("Validate Endpoint")
+//        }
     }
 }

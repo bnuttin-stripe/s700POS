@@ -41,6 +41,7 @@ import com.bnuttin.s700pos.pages.QRSCanner
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
 import com.bnuttin.s700pos.theme.S700POSTheme
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
@@ -267,7 +268,7 @@ fun mainContent() {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = "shop",
+                startDestination = if (AppPreferences.backendUrl?.isNotEmpty() == true) "shop" else "settings",
                 enterTransition = { fadeIn() },
                 exitTransition = { fadeOut() }
             ) {
@@ -308,6 +309,7 @@ fun mainContent() {
                         PaymentDetails(
                             customerViewModel,
                             paymentViewModel,
+                            productViewModel,
                             navController,
                             paymentId
                         )

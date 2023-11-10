@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.components.CustomerCard
+import com.bnuttin.s700pos.components.CustomerLine
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.example.s700pos.R
@@ -69,7 +69,7 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
             columns = GridCells.Fixed(1),
             content = {
                 items(customerViewModel.customers.size) { index ->
-                    CustomerCard(customerViewModel.customers[index], navController)
+                    CustomerLine(customerViewModel.customers[index], navController)
                 }
             },
             modifier = Modifier.padding(top = 200.dp, start = 10.dp, end = 10.dp)

@@ -1,30 +1,37 @@
 package com.bnuttin.s700pos.pages
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.components.FormattedDate
 import com.bnuttin.s700pos.components.PaymentMethod
 import com.bnuttin.s700pos.components.PrettyButton
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
+import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
 
 @Composable
 fun PaymentDetails(
     customerViewModel: CustomerViewModel,
     paymentViewModel: PaymentViewModel,
+    productViewModel: ProductViewModel,
     navController: NavHostController,
     paymentId: String,
 ) {
@@ -43,24 +50,18 @@ fun PaymentDetails(
 //        paymentViewModel.getCustomerPayments(id)
 //    }
 
+    val payment = paymentViewModel.payment
+    Log.d("BENJI", productViewModel.products.toString())
 
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
-            .verticalScroll(rememberScrollState()),
-        content = function(customerViewModel, navController, paymentViewModel, paymentId)
-    )
-}
-
-@Composable
-private fun function(
-    customerViewModel: CustomerViewModel,
-    navController: NavHostController,
-    paymentViewModel: PaymentViewModel,
-    paymentId: String,
-): @Composable() (ColumnScope.() -> Unit) =
-    {
-        val payment = paymentViewModel.payment
+            .verticalScroll(rememberScrollState())
+    ) {
+        // TODO show smart status in a badge (e.g. if partial refund)
+        // TODO verify the card via SetupIntents
+        // TODO show payment method details
+        // TODO show items in purchase
 
         TopRow(
             title = "Payments Details",
@@ -76,26 +77,112 @@ private fun function(
             label = "Back",
             modifier = Modifier
         )
-        Column(){
+        Column {
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ){
+                Text(
+                    "ID: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    payment.id ?: "",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ){
+                Text(
+                    "Order ID: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    payment.metadata?.orderId ?: "",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ){
+                Text(
+                    "Status: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    payment.status ?: "",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ){
+                Text(
+                    "Created: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    FormattedDate(payment.created ?: 0),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row() {
+                Text(
+                    "Payment Method: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 12.dp)
+                )
+                PaymentMethod(
+                    payment.payment_method?.card_present?.brand ?: payment.payment_method?.card?.brand ?: "unknown",
+                    payment.payment_method?.card_present?.wallet?.type ?: payment.payment_method?.card?.wallet?.type
+                )
+                Text(
+                    if (payment.payment_method?.card_present == null) {
+                        "Exp " + payment.payment_method?.card?.exp_month.toString() + "/" + payment.payment_method?.card?.exp_year.toString()
+                    } else {
+                        "Exp " + payment.payment_method.card_present.exp_month.toString() + "/" + payment.payment_method.card_present.exp_year.toString()
+                    },
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                )
+            }
             Text(
-                ("ID: " + payment.id) ?: "",
+                "Items:",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 8.dp)
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
-            Text(
-                "Status: " + payment.status ?: "",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                "Created: " + payment.created ?: "",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
+            payment.metadata?.items?.split(", ")?.map{ item ->
+                productViewModel.products.map{product ->
+                    if (product.id == item) {
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.baseline_arrow_right_24),
+                                contentDescription = "Bullet",
+                                tint = Color.DarkGray
+                            )
+                            Text(
+                                product.name,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+            }
         }
         Row {
             if (paymentViewModel.payment.metadata?.bopis == "pending") {
@@ -115,6 +202,5 @@ private fun function(
                 modifier = Modifier
             )
         }
-        PaymentMethod()
     }
-
+}

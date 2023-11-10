@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.components.Cart
@@ -21,7 +20,6 @@ import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
-import com.bnuttin.s700pos.viewmodels.PrefRepository
 import com.example.s700pos.R
 
 @Composable
@@ -30,8 +28,6 @@ fun Checkout(
     checkoutViewModel: CheckoutViewModel,
     navController: NavHostController
 ) {
-    val prefRepository = PrefRepository(LocalContext.current)
-
     Column(
         modifier = Modifier
             .padding(top = 70.dp, start = 10.dp, end = 10.dp)
@@ -50,9 +46,9 @@ fun Checkout(
 
         Button(
             onClick = {
-                val amount = cartViewModel.total * 100
-                checkoutViewModel.createPaymentIntent(amount = amount.toInt())
-                checkoutViewModel.createPaymentIntentNew(amount = amount.toLong())
+                val amount = cartViewModel.total
+                val items = cartViewModel.items
+                checkoutViewModel.createPaymentIntent(amount, items)
             },
             shape = RoundedCornerShape(size = 6.dp),
             enabled = cartViewModel.total > 0,
@@ -65,7 +61,7 @@ fun Checkout(
                     modifier = Modifier.size(ButtonDefaults.IconSize)
                 )
             } else {
-                Text("Pay")
+                Text("Collect Payment")
             }
         }
         //Text("Payment intent client secret: " + checkoutViewModel.currentPaymentIntent.value?.clientSecret ?: "")

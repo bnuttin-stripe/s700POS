@@ -18,8 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.bnuttin.s700pos.components.PaymentCard
+import com.bnuttin.s700pos.components.PaymentLine
 import com.bnuttin.s700pos.components.TopRow
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.example.s700pos.R
 
@@ -42,8 +43,9 @@ fun PaymentList(paymentViewModel: PaymentViewModel, navController: NavHostContro
         value = search,
         onValueChange = {
             search = it;
-            paymentViewModel.searchPayments(search)
+            paymentViewModel.searchPayments("metadata['orderId']:'" + AppPreferences.orderIdPrefix + "-" + search + "'")
         },
+        singleLine = true,
         modifier = Modifier
             .padding(start = 20.dp, top = 130.dp, end = 20.dp, bottom = 8.dp)
             .fillMaxWidth(),
@@ -57,12 +59,12 @@ fun PaymentList(paymentViewModel: PaymentViewModel, navController: NavHostContro
         },
         placeholder = {Text("Order ID")}
     )
-    when (paymentViewModel.status) {
+    when (paymentViewModel.searchStatus) {
         "done" -> LazyVerticalGrid(
             columns = GridCells.Fixed(1),
             content = {
-                items(paymentViewModel.customerPayments.size) { index ->
-                    PaymentCard(paymentViewModel.customerPayments[index], navController)
+                items(paymentViewModel.searchPayments.size) { index ->
+                    PaymentLine(paymentViewModel.searchPayments[index], navController)
                 }
             },
             modifier = Modifier.padding(top = 200.dp, start = 10.dp, end = 10.dp)

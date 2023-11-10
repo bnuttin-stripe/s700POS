@@ -28,12 +28,20 @@ object AppPreferences {
         get() = Key.BACKENDURL.getString()
         set(value) = Key.BACKENDURL.setString(value)
 
+    var backendValid: Boolean?
+        get() = Key.BACKENDVALID.getBoolean()
+        set(value) = Key.BACKENDVALID.setBoolean(value)
+
     var currency: String?
         get() = Key.CURRENCY.getString()
         set(value) = Key.CURRENCY.setString(value)
 
+    var orderIdPrefix: String?
+        get() = Key.ORDERIDPREFIX.getString()
+        set(value) = Key.ORDERIDPREFIX.setString(value)
+
     private enum class Key {
-        STORENAME, SELLERNAME, BRANDNAME, BACKENDURL, CURRENCY;
+        STORENAME, SELLERNAME, BRANDNAME, BACKENDURL, BACKENDVALID, CURRENCY, ORDERIDPREFIX;
 
         fun getBoolean(): Boolean? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getBoolean(name, false) else null
         fun getFloat(): Float? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getFloat(name, 0f) else null

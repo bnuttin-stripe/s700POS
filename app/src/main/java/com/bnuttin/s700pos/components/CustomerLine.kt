@@ -21,7 +21,7 @@ import com.bnuttin.s700pos.viewmodels.Customer
 import com.example.s700pos.R
 
 @Composable
-fun CustomerCard(
+fun CustomerLine(
     customer: Customer,
     navController: NavController
 ) {

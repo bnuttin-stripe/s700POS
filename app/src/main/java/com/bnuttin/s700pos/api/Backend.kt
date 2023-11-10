@@ -22,8 +22,10 @@ import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 const val DEFAULT_URL = "https://complete-transparent-oval.glitch.me"
+// TODO make a persistent fallback backend
+// TODO error handling on retrofit calls
 
-class BasicAuthInterceptor(username: String, password: String): Interceptor {
+class BasicAuthInterceptor(username: String, password: String) : Interceptor {
     private var credentials: String = Credentials.basic(username, password)
 
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
@@ -34,12 +36,11 @@ class BasicAuthInterceptor(username: String, password: String): Interceptor {
 }
 
 // Update the URL at run time to the one set in the Settings
-class URLInterceptor(): Interceptor {
-    private var serverUrl = DEFAULT_URL
-
+class URLInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         var request = chain.request()
-        val newUrl = request.url.toString().replace(DEFAULT_URL, AppPreferences.backendUrl ?: DEFAULT_URL)
+        val newUrl =
+            request.url.toString().replace(DEFAULT_URL, AppPreferences.backendUrl ?: DEFAULT_URL)
         request = request.newBuilder().url(newUrl).build()
         return chain.proceed(request)
     }
@@ -84,10 +85,10 @@ interface CustomerApi {
     suspend fun searchCustomers(@Path("search") search: String): List<Customer>
 
     @GET("customer/{id}")
-    suspend fun getCustomer(@Path("id") id: String) : Customer
+    suspend fun getCustomer(@Path("id") id: String): Customer
 
     @POST("customer")
-    suspend fun updateCustomer(@Body customer: Customer) : Customer
+    suspend fun updateCustomer(@Body customer: Customer): Customer
 }
 
 interface PaymentApi {
@@ -95,24 +96,24 @@ interface PaymentApi {
     suspend fun searchPayments(@Path("search") search: String): List<Payment>
 
     @GET("payment_intents/{customerId}")
-    suspend fun getCustomerPayments(@Path("customerId") id: String) : List<Payment>
+    suspend fun getCustomerPayments(@Path("customerId") id: String): List<Payment>
 
     @GET("payment_intent/{id}")
-    suspend fun getPayment(@Path("id") id: String) : Payment
-
-    @POST("payment-intent")
-    suspend fun createPaymentIntent(@Body payment: Payment) : Payment
+    suspend fun getPayment(@Path("id") id: String): Payment
 
     @POST("bopis-picked-up")
-    suspend fun bopisPickedUp(@Body id: String) : Payment
+    suspend fun bopisPickedUp(@Body id: String): Payment
 }
 
 interface TerminalApi {
     @GET("connection_token")
-    suspend fun getConnectionToken() : ConnectionToken
+    suspend fun getConnectionToken(): ConnectionToken
 }
 
 object POSApi {
+    val settings: SettingsApi by lazy {
+        retrofit.create(SettingsApi::class.java)
+    }
     val product: ProductApi by lazy {
         retrofit.create(ProductApi::class.java)
     }

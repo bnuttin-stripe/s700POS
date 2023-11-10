@@ -39,6 +39,7 @@ fun FormattedPriceLabel(amount: Double, modifier: Modifier = Modifier): String {
 
 @Composable
 fun FormattedDate(date: Long, modifier: Modifier = Modifier): String {
+    if (date == 0L) return "";
     val dt = Date(date * 1000)
     return DateFormat.getDateInstance().format(dt);
 }
@@ -75,8 +76,8 @@ fun PrettyButton(
     status: String,
     icon: Int,
     label: String,
-    modifier: Modifier
-){
+    modifier: Modifier,
+) {
     Button(
         onClick = {
             onClick()
@@ -99,7 +100,10 @@ fun PrettyButton(
                     modifier = Modifier
                         .size(28.dp)
                         .padding(end = 8.dp)
-                        .graphicsLayer { rotationX = if ( icon == R.drawable.baseline_subdirectory_arrow_left_24) 180f else 0f }
+                        .graphicsLayer {
+                            rotationX =
+                                if (icon == R.drawable.baseline_subdirectory_arrow_left_24) 180f else 0f
+                        }
                 )
                 Text(label)
             }
@@ -125,8 +129,8 @@ fun PrettyIcon(
     status: String,
     icon: Int,
     label: String,
-    modifier: Modifier
-){
+    modifier: Modifier,
+) {
     IconButton(
         onClick = {
             onClick()
@@ -161,11 +165,11 @@ fun TopRow(
     status: String,
     icon: Int,
     label: String,
-    modifier: Modifier
-){
+    modifier: Modifier,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.padding(bottom = 10.dp)
     ) {
         Text(
             title,
@@ -184,75 +188,49 @@ fun TopRow(
 }
 
 @Composable
-fun PaymentMethod(){
-    Image(
-        painterResource(R.drawable.amex),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.applepay),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.cup),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.diners),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.discover),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.gpay),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.jcb),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.mastercard),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Image(
-        painterResource(R.drawable.visa),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp)
-        //tint = Color.DarkGray
-    )
-    Icon(
-        painterResource(R.drawable.baseline_account_balance_24),
-        contentDescription = "Search",
-        modifier = Modifier
-            .size(38.dp),
-        tint = Color.Blue
-    )
+fun PaymentMethod(brand: String, wallet: String?) {
+    Row(){
+        Image(
+            painterResource(
+                when (brand) {
+                    "amex" -> R.drawable.amex
+                    "diners" -> R.drawable.diners
+                    "discover" -> R.drawable.discover
+                    "jcb" -> R.drawable.jcb
+                    "mastercard" -> R.drawable.mastercard
+                    "unionpay" -> R.drawable.cup
+                    "visa" -> R.drawable.visa
+                    "unknown" -> R.drawable.credit_card
+                    else -> {
+                        R.drawable.credit_card
+                    }
+                }
+            ),
+            contentDescription = "Search",
+            modifier = Modifier
+                .size(24.dp)
+        )
+        if (wallet == "apple_pay"){
+            Image(
+                painterResource(
+                    R.drawable.applepay
+                ),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(start = 4.dp)
+            )
+        }
+        if (wallet == "google_pay"){
+            Image(
+                painterResource(
+                    R.drawable.gpay
+                ),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(start = 4.dp)
+            )
+        }
+    }
 }

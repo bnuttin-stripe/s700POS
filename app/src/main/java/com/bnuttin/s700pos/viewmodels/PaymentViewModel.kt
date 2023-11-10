@@ -12,15 +12,42 @@ import java.io.IOException
 
 @Serializable
 data class PaymentMethod(
+    val id: String? = null,
     val type: String? = null,
-    val brand: String? = null,
-    val last4: String? = null
+    val card_present: PaymentMethodCP? = null,
+    val card: PaymentMethodCNP? = null
 )
+
+@Serializable
+data class PaymentMethodWallet(
+    val type: String? = null
+)
+
+@Serializable
+data class PaymentMethodCP(
+    val brand: String? = null,
+    val exp_month: Int? = null,
+    val exp_year: Int? = null,
+    val fingerprint: String? = null,
+    val last4: String? = null,
+    val wallet: PaymentMethodWallet? = null
+)
+
+@Serializable
+data class PaymentMethodCNP(
+    val brand: String? = null,
+    val exp_month: Int? = null,
+    val exp_year: Int? = null,
+    val fingerprint: String? = null,
+    val last4: String? = null,
+    val wallet: PaymentMethodWallet? = null
+)
+
 @Serializable
 data class PaymentMetadata(
     val bopis: String? = null,
-    val order: String? = null,
-    val cart: String? = null,
+    val orderId: String? = null,
+    val items: String? = null,
     val channel: String? = null,
     val store: String? = null
 )
@@ -34,12 +61,15 @@ data class Payment(
     val status: String? = null,
     val client_secret: String? = null,
     val metadata: PaymentMetadata? = null,
-    var created: Long? = null
+    val created: Long? = null,
+    val payment_method: PaymentMethod? = null
 )
 class PaymentViewModel: ViewModel() {
     var status by mutableStateOf("")
     var payment: Payment by mutableStateOf(Payment())
     var customerPayments: List<Payment> by mutableStateOf(listOf())
+    var searchStatus by mutableStateOf("")
+    var searchPayments: List<Payment> by mutableStateOf(listOf())
 
     init {
         searchPayments("")
@@ -50,28 +80,19 @@ class PaymentViewModel: ViewModel() {
     }
 
     fun searchPayments(search: String?) {
-        status = "loading"
+        searchStatus = "loading"
         viewModelScope.launch {
             try {
-                customerPayments = POSApi.payment.searchPayments(search ?: "")
-                status = "done"
+                searchPayments = POSApi.payment.searchPayments(search ?: "")
+                searchStatus = "done"
             } catch (e: IOException) {
-                status = "error"
+                searchStatus = "error"
             }
         }
     }
 
     fun getCustomerPayments(id: String){
-        status = "loading"
-
-        viewModelScope.launch{
-            try {
-                customerPayments = POSApi.payment.getCustomerPayments(id)
-                status = "done"
-            } catch (e: IOException) {
-                status = "error"
-            }
-        }
+        searchPayments("customer:'$id'")
     }
 
     fun getPayment(id: String) : Payment{
