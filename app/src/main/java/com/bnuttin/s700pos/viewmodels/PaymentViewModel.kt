@@ -30,7 +30,7 @@ data class PaymentMethodCP(
     val exp_year: Int? = null,
     val fingerprint: String? = null,
     val last4: String? = null,
-    val wallet: PaymentMethodWallet? = null
+    val wallet: PaymentMethodWallet? = null,
 )
 
 @Serializable
@@ -67,8 +67,9 @@ data class Payment(
 class PaymentViewModel: ViewModel() {
     var status by mutableStateOf("")
     var payment: Payment by mutableStateOf(Payment())
+    var customerPaymentsStatus by mutableStateOf("")
     var customerPayments: List<Payment> by mutableStateOf(listOf())
-    var searchStatus by mutableStateOf("")
+    var searchPaymentsStatus by mutableStateOf("")
     var searchPayments: List<Payment> by mutableStateOf(listOf())
 
     init {
@@ -80,19 +81,27 @@ class PaymentViewModel: ViewModel() {
     }
 
     fun searchPayments(search: String?) {
-        searchStatus = "loading"
+        searchPaymentsStatus = "loading"
         viewModelScope.launch {
             try {
                 searchPayments = POSApi.payment.searchPayments(search ?: "")
-                searchStatus = "done"
+                searchPaymentsStatus = "done"
             } catch (e: IOException) {
-                searchStatus = "error"
+                searchPaymentsStatus = "error"
             }
         }
     }
 
     fun getCustomerPayments(id: String){
-        searchPayments("customer:'$id'")
+        customerPaymentsStatus = "loading"
+        viewModelScope.launch {
+            try {
+                customerPayments = POSApi.payment.searchPayments("customer:'$id'")
+                customerPaymentsStatus = "done"
+            } catch (e: IOException) {
+                customerPaymentsStatus = "error"
+            }
+        }
     }
 
     fun getPayment(id: String) : Payment{

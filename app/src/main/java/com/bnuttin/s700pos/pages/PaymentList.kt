@@ -27,6 +27,7 @@ import com.example.s700pos.R
 @Composable
 fun PaymentList(paymentViewModel: PaymentViewModel, navController: NavHostController) {
     var search by remember { mutableStateOf("") }
+    var payments = paymentViewModel.searchPayments
 
     TopRow(
         title = "Payments",
@@ -59,12 +60,12 @@ fun PaymentList(paymentViewModel: PaymentViewModel, navController: NavHostContro
         },
         placeholder = {Text("Order ID")}
     )
-    when (paymentViewModel.searchStatus) {
+    when (paymentViewModel.searchPaymentsStatus) {
         "done" -> LazyVerticalGrid(
             columns = GridCells.Fixed(1),
             content = {
-                items(paymentViewModel.searchPayments.size) { index ->
-                    PaymentLine(paymentViewModel.searchPayments[index], navController)
+                items(payments.size) { index ->
+                    PaymentLine(payments[index], navController)
                 }
             },
             modifier = Modifier.padding(top = 200.dp, start = 10.dp, end = 10.dp)

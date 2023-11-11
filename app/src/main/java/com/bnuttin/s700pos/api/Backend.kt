@@ -5,6 +5,7 @@ import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.ConnectionToken
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.Payment
+import com.bnuttin.s700pos.viewmodels.PaymentMethod
 import com.bnuttin.s700pos.viewmodels.Product
 //import com.bnuttin.s700pos.viewmodels.ValidationResult
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -94,6 +95,9 @@ interface CustomerApi {
 interface PaymentApi {
     @GET("payments/{search}")
     suspend fun searchPayments(@Path("search") search: String): List<Payment>
+
+    @GET("paymentMethods/{id}")
+    suspend fun getPaymentMethod(@Path("id") id: String): PaymentMethod
 
     @GET("payment_intents/{customerId}")
     suspend fun getCustomerPayments(@Path("customerId") id: String): List<Payment>

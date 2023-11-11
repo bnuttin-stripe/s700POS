@@ -37,7 +37,7 @@ fun CustomerDetails(
     id: String,
 ) {
     //val payments = paymentViewModel.customerPayments
-    val payments = paymentViewModel.searchPayments
+    val payments = paymentViewModel.customerPayments
     val customer = customerViewModel.customer
 
     var selectedTab by remember { mutableStateOf(0) }

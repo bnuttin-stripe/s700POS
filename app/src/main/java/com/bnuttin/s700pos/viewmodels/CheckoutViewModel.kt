@@ -7,9 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.stripe.stripeterminal.Terminal
 import com.stripe.stripeterminal.external.callable.PaymentIntentCallback
+import com.stripe.stripeterminal.external.callable.SetupIntentCallback
 import com.stripe.stripeterminal.external.models.CaptureMethod
 import com.stripe.stripeterminal.external.models.PaymentIntent
 import com.stripe.stripeterminal.external.models.PaymentIntentParameters
+import com.stripe.stripeterminal.external.models.SetupIntent
+import com.stripe.stripeterminal.external.models.SetupIntentConfiguration
+import com.stripe.stripeterminal.external.models.SetupIntentParameters
 import com.stripe.stripeterminal.external.models.TerminalException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +25,12 @@ class CheckoutViewModel : ViewModel() {
     val currentPaymentIntent = _currentPaymentIntent.asStateFlow()
     var currentPayment: Payment by mutableStateOf(Payment())
 
+//    private val _currentSetupIntent = MutableStateFlow<SetupIntent?>(null)
+//    var currentSetupIntent = _currentSetupIntent.asStateFlow()
+    var setupIntentPMId by mutableStateOf("")
+
     private fun generateOrderId(): String {
-        val rand = Random.nextInt(100000,999999)
+        val rand = Random.nextInt(100000, 999999)
         return (AppPreferences.orderIdPrefix ?: "") + "-" + rand.toString()
     }
 
@@ -47,6 +55,7 @@ class CheckoutViewModel : ViewModel() {
             override fun onSuccess(paymentIntent: PaymentIntent) {
                 collectPaymentMethod(paymentIntent)
             }
+
             override fun onFailure(e: TerminalException) {
                 Log.d("BENJI", "Payment intent exception: $e")
             }
@@ -71,14 +80,67 @@ class CheckoutViewModel : ViewModel() {
     }
 
     fun confirmPaymentIntent(paymentIntent: PaymentIntent) {
-        Terminal.getInstance().confirmPaymentIntent(paymentIntent, object : PaymentIntentCallback {
-            override fun onSuccess(paymentIntent: PaymentIntent) {
+        Terminal.getInstance().confirmPaymentIntent(
+            paymentIntent,
+            object : PaymentIntentCallback {
+                override fun onSuccess(paymentIntent: PaymentIntent) {
 
+                }
+
+                override fun onFailure(e: TerminalException) {
+                    // Placeholder for handling the exception
+                }
+            })
+    }
+
+    fun createSetupIntent() {
+        val params = SetupIntentParameters.Builder()
+            //.setCustomer(id)
+            .build()
+
+        Terminal.getInstance().createSetupIntent(params, object : SetupIntentCallback {
+            override fun onSuccess(setupIntent: SetupIntent) {
+                collectSetupIntentPaymentMethod(setupIntent)
             }
 
             override fun onFailure(e: TerminalException) {
-                // Placeholder for handling the exception
+                Log.d("BENJI", "Payment intent exception: $e")
             }
         })
     }
+
+    fun collectSetupIntentPaymentMethod(setupIntent: SetupIntent) {
+        val cancelable = Terminal.getInstance().collectSetupIntentPaymentMethod(
+            setupIntent,
+            true,
+            SetupIntentConfiguration.Builder().build(),
+            object : SetupIntentCallback {
+                override fun onSuccess(setupIntent: SetupIntent) {
+                    //Log.d("BENJI", setupIntent.toString())
+                    confirmSetupIntent(setupIntent)
+                }
+
+                override fun onFailure(exception: TerminalException) {
+                    // Placeholder for handling exception
+                }
+            })
+    }
+
+    fun confirmSetupIntent(setupIntent: SetupIntent) {
+        Terminal.getInstance().confirmSetupIntent(
+            setupIntent,
+            object : SetupIntentCallback {
+                override fun onSuccess(setupIntent: SetupIntent) {
+                    Log.d("BENJI", setupIntent.paymentMethodId ?: "")
+                    setupIntentPMId = setupIntent.paymentMethodId ?: ""
+
+                }
+
+                override fun onFailure(e: TerminalException) {
+                    // Placeholder for handling the exception
+                }
+            })
+    }
+
+
 }

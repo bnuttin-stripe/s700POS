@@ -310,6 +310,7 @@ fun mainContent() {
                             customerViewModel,
                             paymentViewModel,
                             productViewModel,
+                            checkoutViewModel,
                             navController,
                             paymentId
                         )

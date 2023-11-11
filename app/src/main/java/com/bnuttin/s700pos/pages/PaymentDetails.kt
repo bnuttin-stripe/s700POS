@@ -18,25 +18,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.api.POSApi
 import com.bnuttin.s700pos.components.FormattedDate
 import com.bnuttin.s700pos.components.PaymentMethod
 import com.bnuttin.s700pos.components.PrettyButton
 import com.bnuttin.s700pos.components.TopRow
+import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 @Composable
 fun PaymentDetails(
     customerViewModel: CustomerViewModel,
     paymentViewModel: PaymentViewModel,
     productViewModel: ProductViewModel,
+    checkoutViewModel: CheckoutViewModel,
     navController: NavHostController,
     paymentId: String,
 ) {
     LaunchedEffect(key1 = true) {
         paymentViewModel.getPayment(paymentId)
+    }
+
+    LaunchedEffect(key1 = checkoutViewModel.setupIntentPMId){
+        val pm = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
+        Log.d("BENJI", pm.toString())
     }
 
 //    val payments = paymentViewModel.customerPayments
@@ -80,7 +92,7 @@ fun PaymentDetails(
         Column {
             Row(
                 modifier = Modifier.padding(bottom = 12.dp)
-            ){
+            ) {
                 Text(
                     "ID: ",
                     fontSize = 18.sp,
@@ -94,7 +106,7 @@ fun PaymentDetails(
             }
             Row(
                 modifier = Modifier.padding(bottom = 12.dp)
-            ){
+            ) {
                 Text(
                     "Order ID: ",
                     fontSize = 18.sp,
@@ -108,7 +120,7 @@ fun PaymentDetails(
             }
             Row(
                 modifier = Modifier.padding(bottom = 12.dp)
-            ){
+            ) {
                 Text(
                     "Status: ",
                     fontSize = 18.sp,
@@ -122,7 +134,7 @@ fun PaymentDetails(
             }
             Row(
                 modifier = Modifier.padding(bottom = 12.dp)
-            ){
+            ) {
                 Text(
                     "Created: ",
                     fontSize = 18.sp,
@@ -142,8 +154,10 @@ fun PaymentDetails(
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 PaymentMethod(
-                    payment.payment_method?.card_present?.brand ?: payment.payment_method?.card?.brand ?: "unknown",
-                    payment.payment_method?.card_present?.wallet?.type ?: payment.payment_method?.card?.wallet?.type
+                    payment.payment_method?.card_present?.brand
+                        ?: payment.payment_method?.card?.brand ?: "unknown",
+                    payment.payment_method?.card_present?.wallet?.type
+                        ?: payment.payment_method?.card?.wallet?.type
                 )
                 Text(
                     if (payment.payment_method?.card_present == null) {
@@ -157,13 +171,17 @@ fun PaymentDetails(
                 )
             }
             Text(
+                payment.payment_method?.card?.fingerprint
+                    ?: payment.payment_method?.card_present?.fingerprint ?: ""
+            )
+            Text(
                 "Items:",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-            payment.metadata?.items?.split(", ")?.map{ item ->
-                productViewModel.products.map{product ->
+            payment.metadata?.items?.split(", ")?.map { item ->
+                productViewModel.products.map { product ->
                     if (product.id == item) {
                         Row(
                             verticalAlignment = Alignment.Top,
@@ -202,5 +220,32 @@ fun PaymentDetails(
                 modifier = Modifier
             )
         }
+        Text(checkoutViewModel.setupIntentPMId)
+        PrettyButton(
+            onClick = {
+                checkoutViewModel.createSetupIntent()
+            },
+            status = "done",
+            icon = R.drawable.baseline_check_24,
+            label = "Scan Card",
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        PrettyButton(
+            onClick = {
+                CoroutineScope(Dispatchers.Default).launch{
+                    try {
+                        val fingerprint = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
+                        Log.d("BENJI", "Fingerprint: " + fingerprint.toString())
+                    } catch (e: IOException) {
+
+                    }
+                }
+            },
+            status = "done",
+            icon = R.drawable.baseline_check_24,
+            label = "Verify Card",
+            modifier = Modifier.padding(end = 8.dp)
+        )
+
     }
 }
