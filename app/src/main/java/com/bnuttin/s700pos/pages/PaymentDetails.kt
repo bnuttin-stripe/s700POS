@@ -2,14 +2,23 @@ package com.bnuttin.s700pos.pages
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +34,10 @@ import com.bnuttin.s700pos.components.PrettyButton
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.PaymentMethod
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.IOException
 
 @Composable
 fun PaymentDetails(
@@ -42,28 +48,29 @@ fun PaymentDetails(
     navController: NavHostController,
     paymentId: String,
 ) {
+    val payment = paymentViewModel.payment
+    var cardVerified by remember { mutableStateOf(false) }
+    var scannedPaymentMethod by remember { mutableStateOf(PaymentMethod()) }
+
     LaunchedEffect(key1 = true) {
         paymentViewModel.getPayment(paymentId)
+        checkoutViewModel.setupIntentPMId = ""
     }
 
     LaunchedEffect(key1 = checkoutViewModel.setupIntentPMId){
-        val pm = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
-        Log.d("BENJI", pm.toString())
+        if (!checkoutViewModel.setupIntentPMId.isNullOrEmpty()) {
+            scannedPaymentMethod = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
+            cardVerified = scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
+            Log.d("BENJI", scannedPaymentMethod.toString())
+            Log.d("BENJI", cardVerified.toString())
+        }
     }
 
-//    val payments = paymentViewModel.customerPayments
-//    var selectedTab by remember { mutableStateOf(0) }
-//    // TODO put the main customer data into remmeber blocks so we don't requery every time we go to the page?
-//
-//    LaunchedEffect(key1 = true) {
-//        customerViewModel.resetCustomer()
-//        paymentViewModel.resetCustomerPayments()
-//        customerViewModel.getCustomer(id)
-//        paymentViewModel.getCustomerPayments(id)
+//    LaunchedEffect(key1 = scannedPaymentMethod){
+//        Log.d("BENJI", scannedPaymentMethod.card_present?.fingerprint ?: "No fingerprint on scanned card")
+//        Log.d("BENJI", payment.payment_method?.card_present?.fingerprint ?: "No fingerprint on card used for purchase")
+//        cardVerified = scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
 //    }
-
-    val payment = paymentViewModel.payment
-    Log.d("BENJI", productViewModel.products.toString())
 
     Column(
         modifier = Modifier
@@ -217,35 +224,41 @@ fun PaymentDetails(
                 status = paymentViewModel.status,
                 icon = R.drawable.baseline_subdirectory_arrow_left_24,
                 label = "Refund",
-                modifier = Modifier
+                modifier = Modifier.padding(end = 8.dp)
             )
-        }
-        Text(checkoutViewModel.setupIntentPMId)
-        PrettyButton(
-            onClick = {
-                checkoutViewModel.createSetupIntent()
-            },
-            status = "done",
-            icon = R.drawable.baseline_check_24,
-            label = "Scan Card",
-            modifier = Modifier.padding(end = 8.dp)
-        )
-        PrettyButton(
-            onClick = {
-                CoroutineScope(Dispatchers.Default).launch{
-                    try {
-                        val fingerprint = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
-                        Log.d("BENJI", "Fingerprint: " + fingerprint.toString())
-                    } catch (e: IOException) {
+            if (cardVerified) {
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(size = 6.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF007C02)
+                    ),
+                    modifier = Modifier
+                        .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
 
-                    }
+                ) {
+                    Icon(
+                        painterResource(R.drawable.baseline_check_24),
+                        contentDescription = "Verified",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text("Card Verified")
                 }
-            },
-            status = "done",
-            icon = R.drawable.baseline_check_24,
-            label = "Verify Card",
-            modifier = Modifier.padding(end = 8.dp)
-        )
-
+            }
+            // TODO Add logic to show card failed verification
+            else {
+                PrettyButton(
+                    onClick = { checkoutViewModel.createSetupIntent() },
+                    status = paymentViewModel.status,
+                    icon = R.drawable.credit_card,
+                    label = "Verify Card",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
+        }
     }
 }
