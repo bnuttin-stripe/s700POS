@@ -53,6 +53,15 @@ data class PaymentMetadata(
 )
 
 @Serializable
+data class PaymentCharge(
+    val amount: Int? = null,
+    val amount_captured: Int? = null,
+    val amount_refunded: Int? = null,
+){
+    val refunded = amount_captured == amount_refunded
+}
+
+@Serializable
 data class Payment(
     val id: String? = null,
     val amount: Int? = null,
@@ -62,15 +71,25 @@ data class Payment(
     val client_secret: String? = null,
     val metadata: PaymentMetadata? = null,
     val created: Long? = null,
-    val payment_method: PaymentMethod? = null
+    val payment_method: PaymentMethod? = null,
+    val latest_charge: PaymentCharge? = null
 )
+
+@Serializable
+data class PaymentRequest(
+    val id: String
+)
+
 class PaymentViewModel: ViewModel() {
-    var status by mutableStateOf("")
-    var payment: Payment by mutableStateOf(Payment())
+    var currentPaymentStatus by mutableStateOf("")
+    var currentPayment: Payment by mutableStateOf(Payment())
     var customerPaymentsStatus by mutableStateOf("")
     var customerPayments: List<Payment> by mutableStateOf(listOf())
     var searchPaymentsStatus by mutableStateOf("")
     var searchPayments: List<Payment> by mutableStateOf(listOf())
+    var bopisStatus by mutableStateOf("done")
+    var refundStatus by mutableStateOf("done")
+
 
     init {
         searchPayments("")
@@ -105,33 +124,49 @@ class PaymentViewModel: ViewModel() {
     }
 
     fun getPayment(id: String) : Payment{
-        status = "loading"
+        currentPaymentStatus = "loading"
 
         viewModelScope.launch{
             try {
-                payment = POSApi.payment.getPayment(id)
-                status = "done"
+                currentPayment = POSApi.payment.getPayment(id)
+                currentPaymentStatus = "done"
             } catch (e: IOException) {
-                status = "error"
+                currentPaymentStatus = "error"
             }
         }
 
-        return payment
+        return currentPayment
     }
 
     fun bopisPickedUp(id: String) : Payment{
-        status = "loading"
+        bopisStatus = "loading"
 
         viewModelScope.launch{
             try {
-                payment = POSApi.payment.bopisPickedUp(id)
-                status = "done"
+                currentPayment = POSApi.payment.bopisPickedUp(PaymentRequest(id = id))
+                bopisStatus = "done"
             } catch (e: IOException) {
                 e.printStackTrace()
-                status = "done"
+                bopisStatus = "done"
             }
         }
 
-        return payment
+        return currentPayment
+    }
+
+    fun refundPayment(id: String) : Payment{
+        refundStatus = "loading"
+
+        viewModelScope.launch{
+            try {
+                currentPayment = POSApi.payment.refundPayment(PaymentRequest(id = id))
+                refundStatus = "done"
+            } catch (e: IOException) {
+                e.printStackTrace()
+                refundStatus = "done"
+            }
+        }
+
+        return currentPayment
     }
 }

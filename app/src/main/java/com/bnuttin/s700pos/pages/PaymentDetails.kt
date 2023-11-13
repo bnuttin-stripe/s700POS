@@ -1,6 +1,5 @@
 package com.bnuttin.s700pos.pages
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,11 +28,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.api.POSApi
 import com.bnuttin.s700pos.components.FormattedDate
+import com.bnuttin.s700pos.components.FormattedPriceLabel
 import com.bnuttin.s700pos.components.PaymentMethod
-import com.bnuttin.s700pos.components.PrettyButton
+import com.bnuttin.s700pos.components.StatusButton
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
+import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.PaymentMethod
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
@@ -48,7 +49,7 @@ fun PaymentDetails(
     navController: NavHostController,
     paymentId: String,
 ) {
-    val payment = paymentViewModel.payment
+    val payment = paymentViewModel.currentPayment
     var cardVerified by remember { mutableStateOf(false) }
     var scannedPaymentMethod by remember { mutableStateOf(PaymentMethod()) }
 
@@ -57,12 +58,12 @@ fun PaymentDetails(
         checkoutViewModel.setupIntentPMId = ""
     }
 
-    LaunchedEffect(key1 = checkoutViewModel.setupIntentPMId){
+    LaunchedEffect(key1 = checkoutViewModel.setupIntentPMId) {
         if (!checkoutViewModel.setupIntentPMId.isNullOrEmpty()) {
-            scannedPaymentMethod = POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
-            cardVerified = scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
-            Log.d("BENJI", scannedPaymentMethod.toString())
-            Log.d("BENJI", cardVerified.toString())
+            scannedPaymentMethod =
+                POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
+            cardVerified =
+                scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
         }
     }
 
@@ -78,20 +79,21 @@ fun PaymentDetails(
             .verticalScroll(rememberScrollState())
     ) {
         // TODO show smart status in a badge (e.g. if partial refund)
-        // TODO verify the card via SetupIntents
-        // TODO show payment method details
-        // TODO show items in purchase
+        // TODO change action buttons to regular buttons
+        // TODO add details about channel where purchase took place - and field for bopis vs shipped vs picked up
+        // TODO back button clears out current payment
 
         TopRow(
-            title = "Payments Details",
+            title = "Payment Details",
             onClick = {
+                paymentViewModel.currentPayment = Payment()
                 if ((customerViewModel.customer.id ?: "") === "") {
                     navController.navigate("payments")
                 } else {
                     navController.navigate("customer/" + customerViewModel.customer.id)
                 }
             },
-            status = paymentViewModel.status,
+            status = paymentViewModel.currentPaymentStatus,
             icon = R.drawable.outline_arrow_back_24,
             label = "Back",
             modifier = Modifier
@@ -134,7 +136,7 @@ fun PaymentDetails(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    payment.status ?: "",
+                    if (payment.latest_charge?.refunded == true) "Refunded" else "Success",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal
                 )
@@ -143,12 +145,86 @@ fun PaymentDetails(
                 modifier = Modifier.padding(bottom = 12.dp)
             ) {
                 Text(
-                    "Created: ",
+                    "Amount: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    if (payment.latest_charge?.amount_refunded != null) {
+                        if (payment.latest_charge.amount_refunded > 0) {
+                            payment.latest_charge.amount_captured?.let { FormattedPriceLabel(it.toDouble()) } + " (" + FormattedPriceLabel(
+                                payment.latest_charge.amount_refunded.toDouble()
+                            ) + " refunded)"
+                        } else {
+                            payment.latest_charge.amount_captured?.let { FormattedPriceLabel(it.toDouble()) }
+                                ?: ""
+                        }
+                    } else {
+                        payment.latest_charge?.amount_captured?.let { FormattedPriceLabel(it.toDouble()) }
+                            ?: ""
+                    },
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ) {
+                Text(
+                    "On: ",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     FormattedDate(payment.created ?: 0),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ) {
+                Text(
+                    "At: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    if (payment.metadata?.channel == "online") {
+                        "Website"
+                    } else {
+                        payment.metadata?.store ?: "In store"
+                    },
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Row(
+                modifier = Modifier.padding(bottom = 12.dp)
+            ) {
+                Text(
+                    "Delivery: ",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    if (payment.metadata?.channel == "online") {
+                        when (payment.metadata?.bopis) {
+                            "none" -> {
+                                "Shipped"
+                            }
+
+                            "pending" -> {
+                                "Pick up in store (pending)"
+                            }
+
+                            else -> {
+                                "Pick up in store (done)"
+                            }
+                        }
+                    } else {
+                        "N/A"
+                    },
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal
                 )
@@ -178,10 +254,6 @@ fun PaymentDetails(
                 )
             }
             Text(
-                payment.payment_method?.card?.fingerprint
-                    ?: payment.payment_method?.card_present?.fingerprint ?: ""
-            )
-            Text(
                 "Items:",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -210,50 +282,75 @@ fun PaymentDetails(
             }
         }
         Row {
-            if (paymentViewModel.payment.metadata?.bopis == "pending") {
-                PrettyButton(
+            if (paymentViewModel.currentPayment.metadata?.bopis == "pending") {
+                StatusButton(
                     onClick = { paymentViewModel.bopisPickedUp(paymentId) },
-                    status = paymentViewModel.status,
+                    status = paymentViewModel.bopisStatus,
                     icon = R.drawable.baseline_check_24,
                     label = "Picked Up",
                     modifier = Modifier.padding(end = 8.dp)
                 )
             }
-            PrettyButton(
-                onClick = { },
-                status = paymentViewModel.status,
-                icon = R.drawable.baseline_subdirectory_arrow_left_24,
-                label = "Refund",
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            if (cardVerified) {
-                Button(
-                    onClick = {},
-                    shape = RoundedCornerShape(size = 6.dp),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF007C02)
-                    ),
-                    modifier = Modifier
-                        .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
-
-                ) {
-                    Icon(
-                        painterResource(R.drawable.baseline_check_24),
-                        contentDescription = "Verified",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(28.dp)
-                            .padding(end = 8.dp)
-                    )
-                    Text("Card Verified")
-                }
+            if (payment.latest_charge?.refunded == false) {
+                StatusButton(
+                    onClick = { paymentViewModel.refundPayment(paymentId) },
+                    status = paymentViewModel.refundStatus,
+                    icon = R.drawable.baseline_subdirectory_arrow_left_24,
+                    label = "Refund",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
             }
-            // TODO Add logic to show card failed verification
-            else {
-                PrettyButton(
+
+            if (checkoutViewModel.setupIntentPMId !== "") {
+                if (cardVerified) {
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(size = 6.dp),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF007C02)
+                        ),
+                        modifier = Modifier
+                            .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.baseline_check_24),
+                            contentDescription = "Verified",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .padding(end = 8.dp)
+                        )
+                        Text("Card Verified")
+                    }
+                } else {
+                    Button(
+                        onClick = {},
+                        shape = RoundedCornerShape(size = 6.dp),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFff6701)
+                        ),
+                        modifier = Modifier
+                            .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.outline_dangerous_24),
+                            contentDescription = "Verified",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(28.dp)
+                                .padding(end = 8.dp)
+                        )
+                        Text("Card is Different")
+                    }
+                }
+            } else {
+                StatusButton(
                     onClick = { checkoutViewModel.createSetupIntent() },
-                    status = paymentViewModel.status,
+                    status = "done",
                     icon = R.drawable.credit_card,
                     label = "Verify Card",
                     modifier = Modifier.padding(end = 8.dp)

@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.bnuttin.s700pos.components.ProductCard
 import com.bnuttin.s700pos.components.TopRow
-import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.example.s700pos.R
@@ -22,7 +21,7 @@ fun Shop(
     cartViewModel: CartViewModel,
 ) {
     TopRow(
-        title = "Shop " + AppPreferences.storeName,
+        title = "Shop ",
         onClick = { productViewModel.getProducts() },
         status = productViewModel.status,
         icon = R.drawable.baseline_refresh_24,

@@ -71,7 +71,7 @@ fun ErrorImage() {
 }
 
 @Composable
-fun PrettyButton(
+fun StatusButton(
     onClick: () -> Unit,
     status: String,
     icon: Int,

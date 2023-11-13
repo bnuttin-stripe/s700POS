@@ -1,10 +1,12 @@
 package com.bnuttin.s700pos.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -17,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -31,8 +32,8 @@ import com.example.s700pos.R
 @Composable
 fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostController) {
     var search by remember { mutableStateOf("") }
-    var context = LocalContext.current
-    val controller = LocalSoftwareKeyboardController.current
+    //var context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     TopRow(
         title = "Customers",
@@ -49,8 +50,8 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
         value = search,
         onValueChange = {
             search = it;
-            customerViewModel.searchCustomers(search)
         },
+        singleLine = true,
         modifier = Modifier
             .padding(start = 20.dp, top = 130.dp, end = 20.dp, bottom = 8.dp)
             .fillMaxWidth(),
@@ -59,10 +60,18 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
             Icon(
                 painterResource(R.drawable.baseline_search_24),
                 contentDescription = "Search",
-                tint = Color.DarkGray
+                tint = Color.DarkGray,
+                modifier = Modifier.clickable(onClick = {
+                    customerViewModel.searchCustomers(search)
+                })
             )
         },
-        placeholder = {Text("Name or Email")}
+        placeholder = {Text("Name or Email")},
+        keyboardActions = KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+                customerViewModel.searchCustomers(search)
+            }),
     )
     when (customerViewModel.status) {
         "done" -> LazyVerticalGrid(

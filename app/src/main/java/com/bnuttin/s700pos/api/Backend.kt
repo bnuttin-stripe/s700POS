@@ -6,6 +6,7 @@ import com.bnuttin.s700pos.viewmodels.ConnectionToken
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.PaymentMethod
+import com.bnuttin.s700pos.viewmodels.PaymentRequest
 import com.bnuttin.s700pos.viewmodels.Product
 //import com.bnuttin.s700pos.viewmodels.ValidationResult
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -85,11 +86,15 @@ interface CustomerApi {
     @GET("customers/{search}")
     suspend fun searchCustomers(@Path("search") search: String): List<Customer>
 
+    // {id} might be a cust ID, or an email
     @GET("customer/{id}")
-    suspend fun getCustomer(@Path("id") id: String): Customer
+    suspend fun getCustomer(@Path("id") id: String): Customer?
 
     @POST("customer")
     suspend fun updateCustomer(@Body customer: Customer): Customer
+
+    @POST("customer")
+    suspend fun createCustomer(@Body customer: Customer): Customer
 }
 
 interface PaymentApi {
@@ -99,14 +104,14 @@ interface PaymentApi {
     @GET("paymentMethods/{id}")
     suspend fun getPaymentMethod(@Path("id") id: String): PaymentMethod
 
-    @GET("payment_intents/{customerId}")
-    suspend fun getCustomerPayments(@Path("customerId") id: String): List<Payment>
-
-    @GET("payment_intent/{id}")
+    @GET("payment/{id}")
     suspend fun getPayment(@Path("id") id: String): Payment
 
     @POST("bopis-picked-up")
-    suspend fun bopisPickedUp(@Body id: String): Payment
+    suspend fun bopisPickedUp(@Body paymentRequest: PaymentRequest): Payment
+
+    @POST("refund")
+    suspend fun refundPayment(@Body paymentRequest: PaymentRequest): Payment
 }
 
 interface TerminalApi {

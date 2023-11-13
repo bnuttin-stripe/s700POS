@@ -25,8 +25,6 @@ class CheckoutViewModel : ViewModel() {
     val currentPaymentIntent = _currentPaymentIntent.asStateFlow()
     var currentPayment: Payment by mutableStateOf(Payment())
 
-//    private val _currentSetupIntent = MutableStateFlow<SetupIntent?>(null)
-//    var currentSetupIntent = _currentSetupIntent.asStateFlow()
     var setupIntentPMId by mutableStateOf("")
 
     private fun generateOrderId(): String {
@@ -34,7 +32,7 @@ class CheckoutViewModel : ViewModel() {
         return (AppPreferences.orderIdPrefix ?: "") + "-" + rand.toString()
     }
 
-    fun createPaymentIntent(amount: Double, items: List<Product>) {
+    fun createPaymentIntent(amount: Double, items: List<Product>, customerId: String) {
         Log.d("BENJI", "Creating payment intent")
         val orderId = generateOrderId()
         val metadata = HashMap<String, String>()
@@ -42,11 +40,11 @@ class CheckoutViewModel : ViewModel() {
         metadata["store"] = AppPreferences.storeName ?: ""
         metadata["items"] = items.joinToString(separator = ", ") { it.id }
         metadata["orderId"] = orderId
-
         val params = PaymentIntentParameters.Builder()
             .setAmount(amount.toLong())
             .setDescription(orderId)
             .setCurrency("usd")
+            .setCustomer(customerId)
             .setMetadata(metadata)
             .setCaptureMethod(CaptureMethod.Automatic)
             .build()
@@ -120,7 +118,7 @@ class CheckoutViewModel : ViewModel() {
                     confirmSetupIntent(setupIntent)
                 }
 
-                override fun onFailure(exception: TerminalException) {
+                override fun onFailure(e: TerminalException) {
                     // Placeholder for handling exception
                 }
             })

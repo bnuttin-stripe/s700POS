@@ -274,10 +274,18 @@ fun mainContent() {
             ) {
                 // SHOPPING
                 composable("shop") {
-                    Shop(productViewModel, cartViewModel)
+                    Shop(
+                        productViewModel,
+                        cartViewModel
+                    )
                 }
                 composable("checkout") {
-                    Checkout(cartViewModel, checkoutViewModel, navController)
+                    Checkout(
+                        cartViewModel,
+                        checkoutViewModel,
+                        customerViewModel,
+                        navController
+                    )
                 }
 
                 // CUSTOMER MANAGEMENT
@@ -299,6 +307,7 @@ fun mainContent() {
                 // PAYMENTS
                 composable("payments") { navBackStackEntry ->
                     PaymentList(
+                        customerViewModel,
                         paymentViewModel,
                         navController
                     )
@@ -319,14 +328,22 @@ fun mainContent() {
 
                 // SETTINGS
                 composable("settings") {
-                    Settings(cartViewModel, customerViewModel, paymentViewModel, productViewModel, navController)
+                    Settings(
+                        cartViewModel,
+                        customerViewModel,
+                        paymentViewModel,
+                        productViewModel,
+                        navController)
                 }
                 composable("qrscanner") {
-                    QRSCanner(cartViewModel, customerViewModel, paymentViewModel, productViewModel, navController)
+                    QRSCanner(
+                        cartViewModel,
+                        customerViewModel,
+                        paymentViewModel,
+                        productViewModel,
+                        navController)
                 }
-
             }
         }
     }
-
 }

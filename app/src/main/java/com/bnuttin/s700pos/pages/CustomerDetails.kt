@@ -119,31 +119,6 @@ fun CustomerDetails(
             )
         }
 
-//        OutlinedTextField(
-//            value = customerViewModel.customer.name ?: "",
-//            onValueChange = {
-//            },
-//            label = { Text("Name") },
-//            keyboardOptions = KeyboardOptions(
-//                capitalization = KeyboardCapitalization.Words
-//            ),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//        OutlinedTextField(
-//            value = customerViewModel.customer.email ?: "",
-//            onValueChange = {
-//            },
-//            label = { Text("Email") },
-//            keyboardOptions = KeyboardOptions(
-//                keyboardType = KeyboardType.Email
-//            ),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(bottom = 8.dp)
-//        )
-//        HorizontalDivider()
         SecondaryTabRow(
             selectedTabIndex = selectedTab,
             modifier = Modifier.padding(top = 20.dp, bottom = 10.dp)
@@ -162,6 +137,7 @@ fun CustomerDetails(
         if (selectedTab == 0) {
             Column(
             ) {
+                // TODO improve logic here
                 if (payments.isNullOrEmpty()) {
                     Text("No pending BOPIS orders")
                 } else {

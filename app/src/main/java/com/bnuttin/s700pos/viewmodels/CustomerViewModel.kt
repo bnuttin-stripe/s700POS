@@ -22,7 +22,11 @@ data class Customer(
 class CustomerViewModel : ViewModel() {
     var status by mutableStateOf("")
     var customer: Customer by mutableStateOf(Customer())
+    var customerCheckout: Customer by mutableStateOf(Customer())
+    var customerCheckoutStatus by mutableStateOf("")
     var customers: List<Customer> by mutableStateOf(listOf())
+    var customerCreationStatus by mutableStateOf("")
+    // TODO clean up variable names - e.g. currentCustomer
 
     init {
         searchCustomers("")
@@ -40,14 +44,39 @@ class CustomerViewModel : ViewModel() {
         }
     }
 
+    fun getCustomerCheckout(email: String) {
+        customerCheckoutStatus = "loading"
+        viewModelScope.launch {
+            try {
+                customerCheckout = POSApi.customer.getCustomer(email) ?: Customer()
+                customerCheckoutStatus = if (customerCheckout.id == "notfound") { "not found" } else { "found" }
+            } catch (e: IOException) {
+                customerCheckoutStatus = "error"
+            }
+        }
+    }
+
     fun getCustomer(id: String) {
         status = "loading"
         viewModelScope.launch {
             try {
-                customer = POSApi.customer.getCustomer(id)
+                customer = POSApi.customer.getCustomer(id) ?: Customer()
                 status = "done"
             } catch (e: IOException) {
                 status = "error"
+            }
+        }
+    }
+
+    fun createCustomer(name: String, email: String) {
+        customerCreationStatus = "loading"
+        viewModelScope.launch {
+            try {
+                customerCheckout = POSApi.customer.createCustomer(Customer(name = name, email=email))
+                searchCustomers("")
+                customerCreationStatus = "done"
+            } catch (e: IOException) {
+                customerCreationStatus = "error"
             }
         }
     }
