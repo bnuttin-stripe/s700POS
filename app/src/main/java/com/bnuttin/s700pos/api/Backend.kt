@@ -8,6 +8,7 @@ import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.PaymentMethod
 import com.bnuttin.s700pos.viewmodels.PaymentRequest
 import com.bnuttin.s700pos.viewmodels.Product
+import com.bnuttin.s700pos.viewmodels.ReceiptRequest
 //import com.bnuttin.s700pos.viewmodels.ValidationResult
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -112,6 +113,9 @@ interface PaymentApi {
 
     @POST("refund")
     suspend fun refundPayment(@Body paymentRequest: PaymentRequest): Payment
+
+    @POST("receipt")
+    suspend fun sendReceipt(@Body receiptRequest: ReceiptRequest): Payment
 }
 
 interface TerminalApi {

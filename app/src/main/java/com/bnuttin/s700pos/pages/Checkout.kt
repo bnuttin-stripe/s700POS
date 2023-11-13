@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +55,11 @@ fun Checkout(
     var customerEmail by remember { mutableStateOf("") }
     var customerName by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(key1=checkoutViewModel.statusPaymentIntent){
+        if (checkoutViewModel.statusPaymentIntent == "SUCCEEDED")
+            navController.navigate("receipt")
+    }
 
     Column(
         modifier = Modifier
@@ -156,7 +162,7 @@ fun Checkout(
             Row(
                 modifier = Modifier
                     .background(color = Color.LightGray)
-                    .padding(start=12.dp, end=12.dp, top=10.dp, bottom=10.dp),
+                    .padding(start = 12.dp, end = 12.dp, top = 10.dp, bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
 
             ){

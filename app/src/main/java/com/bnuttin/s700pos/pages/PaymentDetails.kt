@@ -79,9 +79,6 @@ fun PaymentDetails(
             .verticalScroll(rememberScrollState())
     ) {
         // TODO show smart status in a badge (e.g. if partial refund)
-        // TODO change action buttons to regular buttons
-        // TODO add details about channel where purchase took place - and field for bopis vs shipped vs picked up
-        // TODO back button clears out current payment
 
         TopRow(
             title = "Payment Details",

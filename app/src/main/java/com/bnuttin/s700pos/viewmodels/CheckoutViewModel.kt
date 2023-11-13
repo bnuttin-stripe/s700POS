@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bnuttin.s700pos.api.POSApi
 import com.stripe.stripeterminal.Terminal
 import com.stripe.stripeterminal.external.callable.PaymentIntentCallback
 import com.stripe.stripeterminal.external.callable.SetupIntentCallback
@@ -15,21 +17,26 @@ import com.stripe.stripeterminal.external.models.SetupIntent
 import com.stripe.stripeterminal.external.models.SetupIntentConfiguration
 import com.stripe.stripeterminal.external.models.SetupIntentParameters
 import com.stripe.stripeterminal.external.models.TerminalException
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.io.IOException
 import kotlin.random.Random
 
 class CheckoutViewModel : ViewModel() {
     var statusPaymentIntent by mutableStateOf("")
-    private val _currentPaymentIntent = MutableStateFlow<PaymentIntent?>(null)
-    val currentPaymentIntent = _currentPaymentIntent.asStateFlow()
-    var currentPayment: Payment by mutableStateOf(Payment())
-
+    var statusReceipt by mutableStateOf("done")
+    var paymentIntendId by mutableStateOf("")
     var setupIntentPMId by mutableStateOf("")
 
     private fun generateOrderId(): String {
         val rand = Random.nextInt(100000, 999999)
         return (AppPreferences.orderIdPrefix ?: "") + "-" + rand.toString()
+    }
+
+    fun reset(){
+        statusPaymentIntent = ""
+        statusReceipt = ""
+        paymentIntendId = ""
+        setupIntentPMId = ""
     }
 
     fun createPaymentIntent(amount: Double, items: List<Product>, customerId: String) {
@@ -51,6 +58,7 @@ class CheckoutViewModel : ViewModel() {
 
         Terminal.getInstance().createPaymentIntent(params, object : PaymentIntentCallback {
             override fun onSuccess(paymentIntent: PaymentIntent) {
+                paymentIntendId = paymentIntent.id ?: ""
                 collectPaymentMethod(paymentIntent)
             }
 
@@ -82,7 +90,8 @@ class CheckoutViewModel : ViewModel() {
             paymentIntent,
             object : PaymentIntentCallback {
                 override fun onSuccess(paymentIntent: PaymentIntent) {
-
+                    Log.d("BENJI", paymentIntent.status.toString())
+                    statusPaymentIntent = paymentIntent.status.toString()
                 }
 
                 override fun onFailure(e: TerminalException) {
@@ -140,5 +149,16 @@ class CheckoutViewModel : ViewModel() {
             })
     }
 
+    fun sendReceipt(id: String, email: String) {
+        statusReceipt = "loading"
+        viewModelScope.launch {
+            try {
+                POSApi.payment.sendReceipt(ReceiptRequest(id, email))
+                statusReceipt = "done"
+            } catch (e: IOException) {
+                statusReceipt = "error"
+            }
+        }
+    }
 
 }

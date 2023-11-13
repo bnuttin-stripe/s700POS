@@ -82,6 +82,19 @@ fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentV
                 keyboardController?.hide()
                 paymentViewModel.searchPayments("metadata['orderId']:'" + AppPreferences.orderIdPrefix + "-" + search + "'")
             }),
+        trailingIcon = {
+            if (search != "") {
+                Icon(
+                    painterResource(R.drawable.outline_close_24),
+                    contentDescription = "Search",
+                    tint = Color.DarkGray,
+                    modifier = Modifier.clickable(onClick = {
+                        search = ""
+                        paymentViewModel.searchPayments("")
+                    })
+                )
+            }
+        },
     )
 
     when (paymentViewModel.searchPaymentsStatus) {

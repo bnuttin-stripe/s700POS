@@ -21,5 +21,8 @@ class CartViewModel : ViewModel() {
 
     fun emptyCart() {
         items = listOf()
+        total = 0.0
+        tax = 0.0
+        subTotal = 0.0
     }
 }

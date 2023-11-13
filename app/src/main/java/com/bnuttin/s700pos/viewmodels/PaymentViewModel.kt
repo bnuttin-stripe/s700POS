@@ -80,6 +80,12 @@ data class PaymentRequest(
     val id: String
 )
 
+@Serializable
+data class ReceiptRequest(
+    val id: String,
+    val email: String
+)
+
 class PaymentViewModel: ViewModel() {
     var currentPaymentStatus by mutableStateOf("")
     var currentPayment: Payment by mutableStateOf(Payment())

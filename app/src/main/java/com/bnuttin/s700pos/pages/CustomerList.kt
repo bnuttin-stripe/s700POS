@@ -72,6 +72,19 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
                 keyboardController?.hide()
                 customerViewModel.searchCustomers(search)
             }),
+        trailingIcon = {
+            if (search != "") {
+                Icon(
+                    painterResource(R.drawable.outline_close_24),
+                    contentDescription = "Search",
+                    tint = Color.DarkGray,
+                    modifier = Modifier.clickable(onClick = {
+                        search = ""
+                        customerViewModel.searchCustomers("")
+                    })
+                )
+            }
+        },
     )
     when (customerViewModel.status) {
         "done" -> LazyVerticalGrid(

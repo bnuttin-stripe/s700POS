@@ -38,6 +38,7 @@ import com.bnuttin.s700pos.pages.CustomerList
 import com.bnuttin.s700pos.pages.PaymentDetails
 import com.bnuttin.s700pos.pages.PaymentList
 import com.bnuttin.s700pos.pages.QRSCanner
+import com.bnuttin.s700pos.pages.Receipt
 import com.bnuttin.s700pos.pages.Settings
 import com.bnuttin.s700pos.pages.Shop
 import com.bnuttin.s700pos.theme.S700POSTheme
@@ -324,6 +325,15 @@ fun mainContent() {
                             paymentId
                         )
                     }
+                }
+                composable("receipt") { navBackStackEntry ->
+                    Receipt(
+                        customerViewModel,
+                        paymentViewModel,
+                        checkoutViewModel,
+                        cartViewModel,
+                        navController
+                    )
                 }
 
                 // SETTINGS

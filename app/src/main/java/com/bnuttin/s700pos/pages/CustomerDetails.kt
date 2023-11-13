@@ -137,8 +137,7 @@ fun CustomerDetails(
         if (selectedTab == 0) {
             Column(
             ) {
-                // TODO improve logic here
-                if (payments.isNullOrEmpty()) {
+                if (payments.none { it.metadata?.bopis == "pending" }) {
                     Text("No pending BOPIS orders")
                 } else {
                     payments.forEach() { payment ->
