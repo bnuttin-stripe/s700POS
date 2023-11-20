@@ -16,10 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -87,6 +84,7 @@ fun Settings(
     var backendUrl by remember { mutableStateOf(AppPreferences.backendUrl) }
     var currency by remember { mutableStateOf(AppPreferences.currency) }
     var orderIdPrefix by remember { mutableStateOf(AppPreferences.orderIdPrefix)}
+    var taxPercentage by remember { mutableStateOf((AppPreferences.taxPercentage))}
 
     var formValid: Boolean by remember { mutableStateOf(false) }
     //var backendValidationResult: ValidationResult by remember { mutableStateOf(ValidationResult(app = "none")) }
@@ -116,10 +114,10 @@ fun Settings(
 //            try {
 //                backendValidationResult = POSApi.settings.validateBackend()
 //                backendValid = (backendValidationResult.app ?: "") == "OK"
-//                //Log.d("BENJI", backendValidationResult.app ?: "Not Good")
+//                //Log.d("S700POS", backendValidationResult.app ?: "Not Good")
 //            } catch (e: IOException) {
 //                backendValid = false
-//                //Log.d("BENJI", e.toString())
+//                //Log.d("S700POS", e.toString())
 //            }
 //        }
 //    }
@@ -131,6 +129,7 @@ fun Settings(
         AppPreferences.backendUrl = backendUrl
         AppPreferences.currency = currency
         AppPreferences.orderIdPrefix = orderIdPrefix
+        AppPreferences.taxPercentage = taxPercentage
         settingsSaved = true
         resetReload()
     }
@@ -239,41 +238,41 @@ fun Settings(
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         )
-        ExposedDropdownMenuBox(
-            expanded = currencyDropdownExpanded,
-            onExpandedChange = { currencyDropdownExpanded = !currencyDropdownExpanded },
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
-                ,
-                readOnly = true,
-                value = selectedCurrencyText,
-                onValueChange = {  },
-                label = { Text("Currency") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = currencyDropdownExpanded) },
-            )
-            ExposedDropdownMenu(
-                expanded = currencyDropdownExpanded,
-                onDismissRequest = { currencyDropdownExpanded = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                currencyOptions.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            selectedCurrencyText = selectionOption
-                            currencyDropdownExpanded = false
-                            currency = selectionOption
-                            checkForm()
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                    )
-                }
-            }
-        }
+//        ExposedDropdownMenuBox(
+//            expanded = currencyDropdownExpanded,
+//            onExpandedChange = { currencyDropdownExpanded = !currencyDropdownExpanded },
+//        ) {
+//            OutlinedTextField(
+//                modifier = Modifier
+//                    .menuAnchor()
+//                    .fillMaxWidth()
+//                    .padding(bottom = 8.dp)
+//                ,
+//                readOnly = true,
+//                value = selectedCurrencyText,
+//                onValueChange = {  },
+//                label = { Text("Currency") },
+//                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = currencyDropdownExpanded) },
+//            )
+//            ExposedDropdownMenu(
+//                expanded = currencyDropdownExpanded,
+//                onDismissRequest = { currencyDropdownExpanded = false },
+//                modifier = Modifier.fillMaxWidth()
+//            ) {
+//                currencyOptions.forEach { selectionOption ->
+//                    DropdownMenuItem(
+//                        text = { Text(selectionOption) },
+//                        onClick = {
+//                            selectedCurrencyText = selectionOption
+//                            currencyDropdownExpanded = false
+//                            currency = selectionOption
+//                            checkForm()
+//                        },
+//                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+//                    )
+//                }
+//            }
+//        }
         OutlinedTextField(
             value = orderIdPrefix ?: "",
             onValueChange = {
@@ -283,6 +282,21 @@ fun Settings(
             label = { Text("Order ID Prefix") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Characters
+            ),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+        OutlinedTextField(
+            value = taxPercentage.toString() ?: "",
+            onValueChange = {
+                taxPercentage = it.toFloat();
+                checkForm()
+            },
+            label = { Text("Tax Percentage") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
             ),
             singleLine = true,
             modifier = Modifier

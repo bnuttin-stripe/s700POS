@@ -40,8 +40,12 @@ object AppPreferences {
         get() = Key.ORDERIDPREFIX.getString()
         set(value) = Key.ORDERIDPREFIX.setString(value)
 
+    var taxPercentage: Float?
+        get() = Key.TAXPERCENTAGE.getFloat()
+        set(value) = Key.TAXPERCENTAGE.setFloat(value)
+
     private enum class Key {
-        STORENAME, SELLERNAME, BRANDNAME, BACKENDURL, BACKENDVALID, CURRENCY, ORDERIDPREFIX;
+        STORENAME, SELLERNAME, BRANDNAME, BACKENDURL, BACKENDVALID, CURRENCY, ORDERIDPREFIX, TAXPERCENTAGE;
 
         fun getBoolean(): Boolean? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getBoolean(name, false) else null
         fun getFloat(): Float? = if (sharedPreferences!!.contains(name)) sharedPreferences!!.getFloat(name, 0f) else null

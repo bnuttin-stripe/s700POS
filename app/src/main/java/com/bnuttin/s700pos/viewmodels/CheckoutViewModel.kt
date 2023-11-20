@@ -32,15 +32,15 @@ class CheckoutViewModel : ViewModel() {
         return (AppPreferences.orderIdPrefix ?: "") + "-" + rand.toString()
     }
 
-    fun reset(){
+    fun reset() {
         statusPaymentIntent = ""
-        statusReceipt = ""
+        statusReceipt = "done"
         paymentIntendId = ""
         setupIntentPMId = ""
     }
 
     fun createPaymentIntent(amount: Double, items: List<Product>, customerId: String) {
-        Log.d("BENJI", "Creating payment intent")
+        Log.d("S700POS", "Creating payment intent")
         val orderId = generateOrderId()
         val metadata = HashMap<String, String>()
         metadata["channel"] = "offline"
@@ -63,7 +63,7 @@ class CheckoutViewModel : ViewModel() {
             }
 
             override fun onFailure(e: TerminalException) {
-                Log.d("BENJI", "Payment intent exception: $e")
+                Log.d("S700POS", "Payment intent exception: $e")
             }
         })
     }
@@ -75,12 +75,12 @@ class CheckoutViewModel : ViewModel() {
                 override fun onSuccess(paymentIntent: PaymentIntent) {
                     val pm = paymentIntent.paymentMethod
                     val card = pm?.cardPresentDetails ?: pm?.interacPresentDetails
-                    Log.d("BENJI", "Payment method collected: $card")
+                    Log.d("S700POS", "Payment method collected: $card")
                     confirmPaymentIntent(paymentIntent)
                 }
 
                 override fun onFailure(e: TerminalException) {
-                    // Placeholder for handling exception
+                    Log.d("S700POS", "Collect payment method exception $e")
                 }
             })
     }
@@ -90,12 +90,12 @@ class CheckoutViewModel : ViewModel() {
             paymentIntent,
             object : PaymentIntentCallback {
                 override fun onSuccess(paymentIntent: PaymentIntent) {
-                    Log.d("BENJI", paymentIntent.status.toString())
+                    Log.d("S700POS", paymentIntent.status.toString())
                     statusPaymentIntent = paymentIntent.status.toString()
                 }
 
                 override fun onFailure(e: TerminalException) {
-                    // Placeholder for handling the exception
+                    Log.d("S700POS", "Confirm payment intent exception $e")
                 }
             })
     }
@@ -111,7 +111,7 @@ class CheckoutViewModel : ViewModel() {
             }
 
             override fun onFailure(e: TerminalException) {
-                Log.d("BENJI", "Payment intent exception: $e")
+                Log.d("S700POS", "Payment intent exception: $e")
             }
         })
     }
@@ -123,7 +123,7 @@ class CheckoutViewModel : ViewModel() {
             SetupIntentConfiguration.Builder().build(),
             object : SetupIntentCallback {
                 override fun onSuccess(setupIntent: SetupIntent) {
-                    //Log.d("BENJI", setupIntent.toString())
+                    //Log.d("S700POS", setupIntent.toString())
                     confirmSetupIntent(setupIntent)
                 }
 
@@ -138,7 +138,7 @@ class CheckoutViewModel : ViewModel() {
             setupIntent,
             object : SetupIntentCallback {
                 override fun onSuccess(setupIntent: SetupIntent) {
-                    Log.d("BENJI", setupIntent.paymentMethodId ?: "")
+                    Log.d("S700POS", setupIntent.paymentMethodId ?: "")
                     setupIntentPMId = setupIntent.paymentMethodId ?: ""
 
                 }

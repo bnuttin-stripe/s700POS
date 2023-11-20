@@ -35,11 +35,12 @@ import com.example.s700pos.R
 @Composable
 fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentViewModel, navController: NavHostController) {
     var search by remember { mutableStateOf("") }
-    var payments = paymentViewModel.searchPayments
+    val payments = paymentViewModel.searchPayments
     val keyboardController = LocalSoftwareKeyboardController.current
+// TODO Search should iterate through current list of items with filter() instead of a call to the backend
 
     LaunchedEffect(key1 = true) {
-        customerViewModel.customer = Customer()
+        customerViewModel.customerLookup = Customer()
     }
 
     TopRow(
@@ -73,7 +74,7 @@ fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentV
                 })
             )
         },
-        placeholder = {Text("Order Number")},
+        placeholder = { Text("Order Number") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),

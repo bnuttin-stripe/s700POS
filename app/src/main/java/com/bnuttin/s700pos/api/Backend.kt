@@ -42,8 +42,7 @@ class BasicAuthInterceptor(username: String, password: String) : Interceptor {
 class URLInterceptor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         var request = chain.request()
-        val newUrl =
-            request.url.toString().replace(DEFAULT_URL, AppPreferences.backendUrl ?: DEFAULT_URL)
+        val newUrl = request.url.toString().replace(DEFAULT_URL, AppPreferences.backendUrl ?: DEFAULT_URL)
         request = request.newBuilder().url(newUrl).build()
         return chain.proceed(request)
     }
@@ -51,7 +50,7 @@ class URLInterceptor() : Interceptor {
 
 // Set logging on the requests
 val loggingInterceptor = HttpLoggingInterceptor().apply {
-    this.level = HttpLoggingInterceptor.Level.BODY
+    this.level = HttpLoggingInterceptor.Level.BASIC
 }
 
 val okHttpClient = OkHttpClient.Builder()

@@ -38,7 +38,7 @@ fun CustomerDetails(
 ) {
     //val payments = paymentViewModel.customerPayments
     val payments = paymentViewModel.customerPayments
-    val customer = customerViewModel.customer
+    val customer = customerViewModel.customerLookup
 
     var selectedTab by remember { mutableStateOf(0) }
 
@@ -57,7 +57,7 @@ fun CustomerDetails(
         TopRow(
             title = "Customer Details",
             onClick = { navController.navigate("customers") },
-            status = customerViewModel.status,
+            status = customerViewModel.customerLookupStatus,
             icon = R.drawable.outline_arrow_back_24,
             label = "Back",
             modifier = Modifier

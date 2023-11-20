@@ -118,6 +118,8 @@ fun QRSCanner(
                             AppPreferences.brandName = json.getString("brandName")
                             AppPreferences.backendUrl = json.getString("backendUrl")
                             AppPreferences.currency = json.getString("currency")
+                            AppPreferences.orderIdPrefix = json.getString("orderIdPrefix")
+                            AppPreferences.taxPercentage = json.getString("taxPercentage").toFloat()
                             resetReload()
                             navController.navigate("settings")
                         }

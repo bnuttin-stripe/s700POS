@@ -52,12 +52,15 @@ fun PaymentDetails(
     val payment = paymentViewModel.currentPayment
     var cardVerified by remember { mutableStateOf(false) }
     var scannedPaymentMethod by remember { mutableStateOf(PaymentMethod()) }
+    var stateChanged by remember { mutableStateOf(false) }
 
+    // Get the payment details on component load
     LaunchedEffect(key1 = true) {
         paymentViewModel.getPayment(paymentId)
         checkoutViewModel.setupIntentPMId = ""
     }
 
+    // If there is a setup intent, check if the payment method's fingerprint matches the payment's payment method's fingerprint
     LaunchedEffect(key1 = checkoutViewModel.setupIntentPMId) {
         if (!checkoutViewModel.setupIntentPMId.isNullOrEmpty()) {
             scannedPaymentMethod =
@@ -66,12 +69,6 @@ fun PaymentDetails(
                 scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
         }
     }
-
-//    LaunchedEffect(key1 = scannedPaymentMethod){
-//        Log.d("BENJI", scannedPaymentMethod.card_present?.fingerprint ?: "No fingerprint on scanned card")
-//        Log.d("BENJI", payment.payment_method?.card_present?.fingerprint ?: "No fingerprint on card used for purchase")
-//        cardVerified = scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
-//    }
 
     Column(
         modifier = Modifier
@@ -83,11 +80,15 @@ fun PaymentDetails(
         TopRow(
             title = "Payment Details",
             onClick = {
+                // Clear out the current payment detail from memory
                 paymentViewModel.currentPayment = Payment()
-                if ((customerViewModel.customer.id ?: "") === "") {
+
+                if ((customerViewModel.customerLookup.id ?: "") === "") {
+                    // If the payment state changed (e.g. we did a refund), reload all payments prior to navigating to that page
+                    if (stateChanged) paymentViewModel.searchPayments("")
                     navController.navigate("payments")
                 } else {
-                    navController.navigate("customer/" + customerViewModel.customer.id)
+                    navController.navigate("customer/" + customerViewModel.customerLookup.id)
                 }
             },
             status = paymentViewModel.currentPaymentStatus,
@@ -206,7 +207,7 @@ fun PaymentDetails(
                 )
                 Text(
                     if (payment.metadata?.channel == "online") {
-                        when (payment.metadata?.bopis) {
+                        when (payment.metadata.bopis) {
                             "none" -> {
                                 "Shipped"
                             }
@@ -290,7 +291,10 @@ fun PaymentDetails(
             }
             if (payment.latest_charge?.refunded == false) {
                 StatusButton(
-                    onClick = { paymentViewModel.refundPayment(paymentId) },
+                    onClick = {
+                        stateChanged = true
+                        paymentViewModel.refundPayment(paymentId)
+                    },
                     status = paymentViewModel.refundStatus,
                     icon = R.drawable.baseline_subdirectory_arrow_left_24,
                     label = "Refund",
@@ -341,7 +345,7 @@ fun PaymentDetails(
                                 .size(28.dp)
                                 .padding(end = 8.dp)
                         )
-                        Text("Card is Different")
+                        Text("Different Card")
                     }
                 }
             } else {

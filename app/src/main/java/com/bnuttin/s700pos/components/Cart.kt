@@ -10,6 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 
 //import com.bnuttin.s700pos.viewmodels.CartViewModel
@@ -51,7 +52,7 @@ fun Cart(cartViewModel: CartViewModel, modifier: Modifier = Modifier) {
                     .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 0.dp)
             ) {
                 Text(
-                    "Tax",
+                    "Tax (" + AppPreferences.taxPercentage + "%)",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.weight(.75f),

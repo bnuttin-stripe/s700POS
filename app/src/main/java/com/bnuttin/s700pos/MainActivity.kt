@@ -89,11 +89,11 @@ class MainActivity : ComponentActivity() {
 
     private fun onPermissionsRejected(rejectedPermissions: List<String>) {
         // TODO redirect to an error page
-        Log.d("BENJI", "Permissions rejected")
+        Log.d("S700POS", "Permissions rejected")
     }
 
     private fun onPermissionsGranted() {
-        Log.d("BENJI", "Permissions granted")
+        Log.d("S700POS", "Permissions granted")
     }
 
     private val locationPermissionRequest: ActivityResultLauncher<Array<String>> =
@@ -113,11 +113,11 @@ class MainActivity : ComponentActivity() {
     }
 
     fun initTerminal() {
-        Log.d("BENJI", "Launching initTerminal")
+        Log.d("S700POS", "Launching initTerminal")
         // Create your listener object. Override any methods that you want to be notified about
         val listener = object : TerminalListener {
             override fun onUnexpectedReaderDisconnect(reader: Reader) {
-                Log.d("BENJI", "Device disconnected")
+                Log.d("S700POS", "Device disconnected")
             }
         }
 
@@ -129,7 +129,7 @@ class MainActivity : ComponentActivity() {
 
         // Pass in the current application context, your desired logging level, your token provider, and the listener you created
         if (!Terminal.isInitialized()) {
-            Log.d("BENJI", "Initializing Terminal")
+            Log.d("S700POS", "Initializing Terminal")
             Terminal.initTerminal(applicationContext, logLevel, tokenProvider, listener)
         }
 
@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
             connectionCallback = object: ReaderCallback {
                 override fun onSuccess(reader: Reader) {
                     // ready for payment collection
-                    Log.d("BENJI", "Connected to handoff reader")
+                    Log.d("S700POS", "Connected to handoff reader")
                 }
 
                 override fun onFailure(e: TerminalException) {
@@ -156,7 +156,7 @@ class MainActivity : ComponentActivity() {
 
 
     fun onDiscoverReaders() {
-        Log.d("BENJI", "Discovering reader")
+        Log.d("S700POS", "Discovering reader")
         var discoveryCancelable: Cancelable? = null
         val isApplicationDebuggable = 0 != applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE
 
@@ -165,7 +165,7 @@ class MainActivity : ComponentActivity() {
         discoveryCancelable = Terminal.getInstance().discoverReaders(config,
             object : DiscoveryListener {
                 override fun onUpdateDiscoveredReaders(readers: List<Reader>) {
-                    Log.d("BENJI", "onUpdateDiscoveredReaders: ${readers.size}")
+                    Log.d("S700POS", "onUpdateDiscoveredReaders: ${readers.size}")
                     //Will get list of readers. Then pick one and call  Terminal.getInstance().connectLocalMobileReader(
                     connectReader(readers.first())
                 }

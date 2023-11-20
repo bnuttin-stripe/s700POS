@@ -20,26 +20,25 @@ data class Customer(
 )
 
 class CustomerViewModel : ViewModel() {
-    var status by mutableStateOf("")
-    var customer: Customer by mutableStateOf(Customer())
+    var customerLookup: Customer by mutableStateOf(Customer())
+    var customerLookupStatus by mutableStateOf("")
     var customerCheckout: Customer by mutableStateOf(Customer())
     var customerCheckoutStatus by mutableStateOf("")
     var customers: List<Customer> by mutableStateOf(listOf())
     var customerCreationStatus by mutableStateOf("")
-    // TODO clean up variable names - e.g. currentCustomer
 
     init {
         searchCustomers("")
     }
 
     fun searchCustomers(search: String?) {
-        status = "loading"
+        customerLookupStatus = "loading"
         viewModelScope.launch {
             try {
                 customers = POSApi.customer.searchCustomers(search ?: "")
-                status = "done"
+                customerLookupStatus = "done"
             } catch (e: IOException) {
-                status = "error"
+                customerLookupStatus = "error"
             }
         }
     }
@@ -57,13 +56,13 @@ class CustomerViewModel : ViewModel() {
     }
 
     fun getCustomer(id: String) {
-        status = "loading"
+        customerLookupStatus = "loading"
         viewModelScope.launch {
             try {
-                customer = POSApi.customer.getCustomer(id) ?: Customer()
-                status = "done"
+                customerLookup = POSApi.customer.getCustomer(id) ?: Customer()
+                customerLookupStatus = "done"
             } catch (e: IOException) {
-                status = "error"
+                customerLookupStatus = "error"
             }
         }
     }
@@ -82,19 +81,19 @@ class CustomerViewModel : ViewModel() {
     }
 
     fun resetCustomer() {
-        customer = Customer()
+        customerLookup = Customer()
     }
 
     // TODO should be passing a customer class to this function
     fun updateCustomer(id: String, name: String, email: String) {
-        status = "loading"
-        customer = Customer()
+        customerLookupStatus = "loading"
+        customerLookup = Customer()
         viewModelScope.launch {
             try {
-                customer = POSApi.customer.updateCustomer(Customer(id = id, name = name, email = email))
-                status = "done"
+                customerLookup = POSApi.customer.updateCustomer(Customer(id = id, name = name, email = email))
+                customerLookupStatus = "done"
             } catch (e: IOException) {
-                status = "error"
+                customerLookupStatus = "error"
             }
         }
     }

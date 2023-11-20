@@ -86,9 +86,6 @@ fun Receipt(
             StatusButton(
                 onClick = {
                     checkoutViewModel.sendReceipt(id=checkoutViewModel.paymentIntendId, email=email)
-//                    cartViewModel.emptyCart()
-//                    checkoutViewModel.reset()
-//                    navController.navigate("shop")
                 },
                 status = checkoutViewModel.statusReceipt,
                 icon = R.drawable.outline_receipt_24,

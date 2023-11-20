@@ -32,8 +32,9 @@ import com.example.s700pos.R
 @Composable
 fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostController) {
     var search by remember { mutableStateOf("") }
-    //var context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
+// TODO Search should iterate through current list of items with filter() instead of a call to the backend
+
 
     TopRow(
         title = "Customers",
@@ -41,7 +42,7 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
             search = "";
             customerViewModel.searchCustomers("")
         },
-        status = customerViewModel.status,
+        status = customerViewModel.customerLookupStatus,
         icon = R.drawable.baseline_refresh_24,
         label = "Refresh",
         modifier = Modifier.padding(start = 10.dp, top = 70.dp, end = 10.dp, bottom = 8.dp),
@@ -86,7 +87,7 @@ fun CustomerList(customerViewModel: CustomerViewModel, navController: NavHostCon
             }
         },
     )
-    when (customerViewModel.status) {
+    when (customerViewModel.customerLookupStatus) {
         "done" -> LazyVerticalGrid(
             columns = GridCells.Fixed(1),
             content = {
