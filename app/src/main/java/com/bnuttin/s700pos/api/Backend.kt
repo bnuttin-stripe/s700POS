@@ -24,8 +24,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-const val DEFAULT_URL = "https://complete-transparent-oval.glitch.me"
-// TODO make a persistent fallback backend
+const val DEFAULT_URL = "https://stripe360.stripedemos.com/"
 // TODO error handling on retrofit calls
 
 class BasicAuthInterceptor(username: String, password: String) : Interceptor {
@@ -89,9 +88,6 @@ interface CustomerApi {
     // {id} might be a cust ID, or an email
     @GET("customer/{id}")
     suspend fun getCustomer(@Path("id") id: String): Customer?
-
-    @POST("customer")
-    suspend fun updateCustomer(@Body customer: Customer): Customer
 
     @POST("customer")
     suspend fun createCustomer(@Body customer: Customer): Customer

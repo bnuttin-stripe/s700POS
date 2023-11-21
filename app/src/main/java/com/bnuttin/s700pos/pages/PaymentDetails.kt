@@ -50,7 +50,7 @@ fun PaymentDetails(
     paymentId: String,
 ) {
     val payment = paymentViewModel.currentPayment
-    var cardVerified by remember { mutableStateOf(false) }
+    var cardVerified by remember { mutableStateOf("none") }
     var scannedPaymentMethod by remember { mutableStateOf(PaymentMethod()) }
     var stateChanged by remember { mutableStateOf(false) }
 
@@ -65,8 +65,12 @@ fun PaymentDetails(
         if (!checkoutViewModel.setupIntentPMId.isNullOrEmpty()) {
             scannedPaymentMethod =
                 POSApi.payment.getPaymentMethod(checkoutViewModel.setupIntentPMId)
-            cardVerified =
-                scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint
+
+            cardVerified = if (scannedPaymentMethod.card_present?.fingerprint == payment.payment_method?.card_present?.fingerprint) {
+                "passed"
+            } else {
+                "failed"
+            }
         }
     }
 
@@ -302,53 +306,54 @@ fun PaymentDetails(
                 )
             }
 
-            if (checkoutViewModel.setupIntentPMId !== "") {
-                if (cardVerified) {
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(size = 6.dp),
-                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF007C02)
-                        ),
-                        modifier = Modifier
-                            .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+            if (checkoutViewModel.setupIntentPMId !== "" && cardVerified == "passed") {
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(size = 6.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF007C02)
+                    ),
+                    modifier = Modifier
+                        .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
 
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.baseline_check_24),
-                            contentDescription = "Verified",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .padding(end = 8.dp)
-                        )
-                        Text("Card Verified")
-                    }
-                } else {
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(size = 6.dp),
-                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFff6701)
-                        ),
+                ) {
+                    Icon(
+                        painterResource(R.drawable.baseline_check_24),
+                        contentDescription = "Verified",
+                        tint = Color.White,
                         modifier = Modifier
-                            .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
-
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.outline_dangerous_24),
-                            contentDescription = "Verified",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .padding(end = 8.dp)
-                        )
-                        Text("Different Card")
-                    }
+                            .size(28.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text("Card Verified")
                 }
-            } else {
+            }
+            if (checkoutViewModel.setupIntentPMId !== "" && cardVerified == "failed") {
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(size = 6.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFff6701)
+                    ),
+                    modifier = Modifier
+                        .padding(start = 0.dp, top = 8.dp, end = 0.dp, bottom = 8.dp)
+
+                ) {
+                    Icon(
+                        painterResource(R.drawable.outline_dangerous_24),
+                        contentDescription = "Failed",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(28.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text("Different Card")
+                }
+            }
+
+            if (checkoutViewModel.setupIntentPMId == "") {
                 StatusButton(
                     onClick = { checkoutViewModel.createSetupIntent() },
                     status = "done",

@@ -83,18 +83,4 @@ class CustomerViewModel : ViewModel() {
     fun resetCustomer() {
         customerLookup = Customer()
     }
-
-    // TODO should be passing a customer class to this function
-    fun updateCustomer(id: String, name: String, email: String) {
-        customerLookupStatus = "loading"
-        customerLookup = Customer()
-        viewModelScope.launch {
-            try {
-                customerLookup = POSApi.customer.updateCustomer(Customer(id = id, name = name, email = email))
-                customerLookupStatus = "done"
-            } catch (e: IOException) {
-                customerLookupStatus = "error"
-            }
-        }
-    }
 }

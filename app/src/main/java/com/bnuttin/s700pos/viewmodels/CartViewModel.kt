@@ -16,8 +16,7 @@ class CartViewModel : ViewModel() {
         items += product
         subTotal += product.price
         tax = subTotal * (AppPreferences.taxPercentage?.toDouble() ?: 0.0) / 100
-        //total = subTotal + tax
-        total = 2005.0
+        total = subTotal + tax
     }
 
     fun emptyCart() {

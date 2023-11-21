@@ -49,7 +49,7 @@ fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentV
             search = "";
             paymentViewModel.searchPayments("")
         },
-        status = "done",
+        status = paymentViewModel.searchPaymentsStatus,
         icon = R.drawable.baseline_refresh_24,
         label = "Refresh",
         modifier = Modifier.padding(start = 10.dp, top = 70.dp, end = 10.dp, bottom = 8.dp),
