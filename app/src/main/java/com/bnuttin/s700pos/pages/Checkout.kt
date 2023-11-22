@@ -43,7 +43,7 @@ import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CheckoutViewModel
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @Composable
 fun Checkout(

@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 import java.text.DateFormat
 import java.util.Date
 

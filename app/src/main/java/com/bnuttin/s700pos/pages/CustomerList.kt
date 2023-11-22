@@ -26,7 +26,7 @@ import androidx.navigation.NavHostController
 import com.bnuttin.s700pos.components.CustomerLine
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable

@@ -30,7 +30,7 @@ import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @Composable
 fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentViewModel, navController: NavHostController) {

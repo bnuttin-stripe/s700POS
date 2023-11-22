@@ -50,7 +50,7 @@ import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
 import com.bnuttin.s700pos.viewmodels.TokenProvider
 import com.bnuttin.s700pos.viewmodels.discoveryCancelable
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 import com.stripe.stripeterminal.Terminal
 import com.stripe.stripeterminal.external.callable.Callback
 import com.stripe.stripeterminal.external.callable.Cancelable

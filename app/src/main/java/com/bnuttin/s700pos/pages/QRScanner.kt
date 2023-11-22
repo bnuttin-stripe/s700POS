@@ -32,7 +32,7 @@ import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 import org.json.JSONObject
 
 @Composable

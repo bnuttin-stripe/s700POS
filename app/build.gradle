@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.s700pos'
+    namespace 'com.bnuttin.s700pos'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.s700pos"
+        applicationId "com.bnuttin.s700pos"
         //minSdk 24
         minSdk 26
         targetSdk 33

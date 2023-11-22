@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.PaymentMetadata
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @Composable
 fun PaymentLine(

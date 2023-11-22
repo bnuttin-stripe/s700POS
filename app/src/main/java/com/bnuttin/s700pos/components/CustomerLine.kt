@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bnuttin.s700pos.viewmodels.Customer
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @Composable
 fun CustomerLine(

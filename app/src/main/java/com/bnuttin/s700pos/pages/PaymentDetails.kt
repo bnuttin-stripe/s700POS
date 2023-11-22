@@ -38,7 +38,7 @@ import com.bnuttin.s700pos.viewmodels.Payment
 import com.bnuttin.s700pos.viewmodels.PaymentMethod
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
-import com.example.s700pos.R
+import com.bnuttin.s700pos.R
 
 @Composable
 fun PaymentDetails(
