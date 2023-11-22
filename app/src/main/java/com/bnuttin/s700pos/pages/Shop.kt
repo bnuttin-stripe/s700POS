@@ -8,11 +8,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bnuttin.s700pos.R
 import com.bnuttin.s700pos.components.ProductCard
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.CartViewModel
 import com.bnuttin.s700pos.viewmodels.ProductViewModel
-import com.bnuttin.s700pos.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
