@@ -24,13 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.bnuttin.s700pos.R
 import com.bnuttin.s700pos.components.PaymentLine
 import com.bnuttin.s700pos.components.TopRow
 import com.bnuttin.s700pos.viewmodels.AppPreferences
 import com.bnuttin.s700pos.viewmodels.Customer
 import com.bnuttin.s700pos.viewmodels.CustomerViewModel
 import com.bnuttin.s700pos.viewmodels.PaymentViewModel
-import com.bnuttin.s700pos.R
 
 @Composable
 fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentViewModel, navController: NavHostController) {
@@ -38,6 +38,7 @@ fun PaymentList(customerViewModel: CustomerViewModel, paymentViewModel: PaymentV
     val payments = paymentViewModel.searchPayments
     val keyboardController = LocalSoftwareKeyboardController.current
 // TODO Search should iterate through current list of items with filter() instead of a call to the backend
+    // TODO Search by card fingerprint for guest BOPIS checkouts
 
     LaunchedEffect(key1 = true) {
         customerViewModel.customerLookup = Customer()
