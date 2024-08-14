@@ -13,19 +13,19 @@ object AppPreferences {
     }
 
     var storeName : String?
-        get() = Key.STORENAME.getString()
+        get() = Key.STORENAME.getString() ?: "Chicago store"
         set(value) = Key.STORENAME.setString(value)
 
     var sellerName : String?
-        get() = Key.SELLERNAME.getString()
+        get() = Key.SELLERNAME.getString() ?: "Jenny Rosen"
         set(value) = Key.SELLERNAME.setString(value)
 
     var brandName: String?
-        get() = Key.BRANDNAME.getString()
+        get() = Key.BRANDNAME.getString() ?: "Stripe 360"
         set(value) = Key.BRANDNAME.setString(value)
 
     var backendUrl: String?
-        get() = Key.BACKENDURL.getString()
+        get() = Key.BACKENDURL.getString() ?: "https://stripe360.stripedemos.com"
         set(value) = Key.BACKENDURL.setString(value)
 
     var backendValid: Boolean?
@@ -33,15 +33,15 @@ object AppPreferences {
         set(value) = Key.BACKENDVALID.setBoolean(value)
 
     var currency: String?
-        get() = Key.CURRENCY.getString()
+        get() = Key.CURRENCY.getString() ?: "USD"
         set(value) = Key.CURRENCY.setString(value)
 
     var orderIdPrefix: String?
-        get() = Key.ORDERIDPREFIX.getString()
+        get() = Key.ORDERIDPREFIX.getString() ?: "PRESS"
         set(value) = Key.ORDERIDPREFIX.setString(value)
 
     var taxPercentage: Float?
-        get() = Key.TAXPERCENTAGE.getFloat()
+        get() = Key.TAXPERCENTAGE.getFloat() ?: 10.0F
         set(value) = Key.TAXPERCENTAGE.setFloat(value)
 
     private enum class Key {
