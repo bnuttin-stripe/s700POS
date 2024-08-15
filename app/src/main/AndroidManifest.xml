@@ -35,12 +35,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.S700POS"
         android:usesCleartextTraffic="true"
-        android:screenOrientation="portrait"
-        tools:targetApi="29">
+        >
         <activity
             android:name="com.bnuttin.s700pos.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.S700POS">
+            android:theme="@style/Theme.S700POS"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -25,7 +25,7 @@ object AppPreferences {
         set(value) = Key.BRANDNAME.setString(value)
 
     var backendUrl: String?
-        get() = Key.BACKENDURL.getString() ?: "https://stripe360.stripedemos.com"
+        get() = Key.BACKENDURL.getString() ?: "https://stripe360.stripedemos.com/"
         set(value) = Key.BACKENDURL.setString(value)
 
     var backendValid: Boolean?
